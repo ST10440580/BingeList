@@ -1,11 +1,11 @@
-# Binge List — OPS C6312 POE
+# Binge List — OPSC6312 POE
 
 ## Group 17:
-- <ST10441936 - Sibongile Zandile Nhlapo>
-- <ST10447508 - Natasha Mvundlela>
-- <ST10349188 - Molebogeng Eddiemon Thupi>
-- <ST10445772 - Ronewa Nemubvumoni>
-- <ST10440580 - Tshepang Ramohapi>
+- ST10441936 - Sibongile Zandile Nhlapo
+- ST10447508 - Natasha Mvundlela
+- ST10349188 - Molebogeng Eddiemon Thupi
+- ST10445772 - Ronewa Nemubvumoni
+- ST10440580 - Tshepang Ramohapi
 
 ## What this app does
 
@@ -15,7 +15,7 @@ The app provides a simple and visually appealing interface designed to make disc
 
 ## Features implemented in Formative 02 Part 02
 
-- [ ] Register / log in (password encrypted)
+- [x] Register / log in (password encrypted)
 - [x] Settings screen
 - [x] REST API connected to a hosted database
 - [x] Movie discovery and browsing
@@ -38,10 +38,10 @@ The app provides a simple and visually appealing interface designed to make disc
 
 ## API & hosting
 
-- API base URL for OmdbApi: '<https://www.omdbapi.com/>'
-- API base URL for TmdbApi: '<https://api.themoviedb.org/3/>'
+- API base URL for OmdbApi: https://www.omdbapi.com/
+- API base URL for TmdbApi: https://api.themoviedb.org/3/
 - Hosting provider: To be confirmed
-- Database: '<SQL and Firebase>'
+- Database: SQL and Firebase
 
 ## Changelog v1
 
