@@ -4,7 +4,7 @@
 - ST10441936 - Sibongile Zandile Nhlapo(Sign Up screen)
 - ST10447508 - Natasha Mvundlela(WatchList Screen)
 - ST10349188 - Molebogeng Eddiemon Thupi(Settings screen)
-- ST10445772 - Ronewa Nemubvumoni(Automated Testing and UserInterface)
+- ST10445772 - Ronewa Nemubvumoni(Tester and User Interface Designer)
 - ST10440580 - Tshepang Ramohapi(Api integration, Favorite screen and discover screen)
 
 ## What this app does
@@ -40,7 +40,6 @@ The app provides a simple and visually appealing interface designed to make disc
 
 - API base URL for OmdbApi: https://www.omdbapi.com/
 - API base URL for TmdbApi: https://api.themoviedb.org/3/
-- Hosting provider: To be confirmed
 - Database: SQL and Firebase
 
 ## Changelog v1
