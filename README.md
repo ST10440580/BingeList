@@ -15,16 +15,16 @@ The app provides a simple and visually appealing interface designed to make disc
 
 ## Features implemented in Formative 02 Part 02
 
-- [x] Register / log in (password encrypted)
-- [x] Settings screen
-- [x] REST API connected to a hosted database
-- [x] Movie discovery and browsing
-- [x] Search movies by title or genre
-- [x] Browse movies by genre
-- [x] Add movies to Watchlist
-- [x] Add movies to Favorites
-- [x] Discover screen with "New This Week" movies
-- [x] Bottom navigation between Discover, Watchlist, Favorites and Settings
+-  Register / log in (password encrypted)
+-  Settings screen
+-  REST API connected to a hosted database
+-  Movie discovery and browsing
+-  Search movies by title or genre
+-  Browse movies by genre
+-  Add movies to Watchlist
+-  Add movies to Favorites
+-  Discover screen with "New This Week" movies
+-  Bottom navigation between Discover, Watchlist, Favorites and Settings
 
 ## Tech stack
 
