@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Merge these into your existing strings.xml -->
+    <string name="app_name">BingeList</string>
+    <string name="app_tagline">Never forget what to watch next</string>
+    <string name="search_hint">Search by title or genre…</string>
+    <string name="search_prompt">Search for a movie to see results here.</string>
+    <string name="new_this_week_label">New this week</string>
+    <string name="movie_poster_description">Movie poster</string>
+    <string name="nav_discover">Discover</string>
+    <string name="nav_watchlist">Watchlist</string>
+    <string name="nav_favorites">Favorites</string>
+    <string name="nav_settings">Settings</string>
+</resources>
