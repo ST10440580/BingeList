@@ -1,11 +1,11 @@
 # Binge List — OPSC6312 POE
 
 ## Group 17:
-- ST10441936 - Sibongile Zandile Nhlapo
-- ST10447508 - Natasha Mvundlela
-- ST10349188 - Molebogeng Eddiemon Thupi
-- ST10445772 - Ronewa Nemubvumoni
-- ST10440580 - Tshepang Ramohapi
+- ST10441936 - Sibongile Zandile Nhlapo(Sign Up)
+- ST10447508 - Natasha Mvundlela(WatchList Screen)
+- ST10349188 - Molebogeng Eddiemon Thupi(Settings screen)
+- ST10445772 - Ronewa Nemubvumoni(Automated Testing and UserInterface)
+- ST10440580 - Tshepang Ramohapi(Api integration, Favorite screen and discover screen)
 
 ## What this app does
 
