@@ -1,7 +1,7 @@
 # Binge List — OPSC6312 POE
 
 ## Group 17:
-- ST10441936 - Sibongile Zandile Nhlapo(Sign Up)
+- ST10441936 - Sibongile Zandile Nhlapo(Sign Up screen)
 - ST10447508 - Natasha Mvundlela(WatchList Screen)
 - ST10349188 - Molebogeng Eddiemon Thupi(Settings screen)
 - ST10445772 - Ronewa Nemubvumoni(Automated Testing and UserInterface)
