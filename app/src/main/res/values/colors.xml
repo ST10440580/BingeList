@@ -42,4 +42,11 @@
     <color name="bl_rating_badge_bg">#CC1A1A1A</color>
     <color name="bl_star_gold">#F2B705</color>
     <color name="bl_favorite_inactive">#B9C4AC</color>
+
+    <color name="binge_red">#E50914</color>
+    <color name="binge_surface">#1F1F1F</color>
+    <color name="binge_card">#2A2A2A</color>
+    <color name="binge_text_primary">#FFFFFF</color>
+    <color name="binge_text_secondary">#B3B3B3</color>
+
 </resources>
