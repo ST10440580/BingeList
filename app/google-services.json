@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "990405555581",
+    "project_id": "weatherappui-c35d85f1",
+    "storage_bucket": "weatherappui-c35d85f1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:990405555581:android:a0f39f3e05a21294874814",
+        "android_client_info": {
+          "package_name": "com.example.bingelist"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxWikq1qnaGGDsppnFFB4e9qdjkN-kdLk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

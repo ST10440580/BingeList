@@ -42,7 +42,11 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
-    implementation(libs.androidx.constraintlayout)
+
+
+
+        //Firebase Authentication:
+        implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
 
     // Networking — talks to OMDb
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
