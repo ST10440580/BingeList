@@ -1,5 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.google.services)
+
 }
 
 android {
@@ -45,8 +47,10 @@ dependencies {
 
 
 
-        //Firebase Authentication:
-        implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
+    //Firebase Authentication:
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
+    implementation("com.google.firebase:firebase-auth")
+
 
     // Networking — talks to OMDb
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
@@ -63,10 +67,13 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.4")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.4")
 
-    // UI — RecyclerView (not in your version catalog, so kept explicit)
+    // UI
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation(libs.androidx.constraintlayout)
 
     testImplementation(libs.junit)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
 }
