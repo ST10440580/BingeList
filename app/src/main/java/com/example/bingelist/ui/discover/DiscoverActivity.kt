@@ -1,5 +1,6 @@
 package com.example.bingelist.ui.discover
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -10,8 +11,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.bingelist.data.model.MovieSummary
 import com.example.bingelist.databinding.ActivityDiscoverBinding
+import com.example.bingelist.ui.watchlist.WatchlistActivity
 import kotlinx.coroutines.launch
 
 class DiscoverActivity : AppCompatActivity() {
@@ -34,6 +35,11 @@ class DiscoverActivity : AppCompatActivity() {
         setupSearchView()
         setupBottomNav()
         observeViewModel()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshState()
     }
 
     private fun setupNewThisWeek() {
@@ -77,7 +83,7 @@ class DiscoverActivity : AppCompatActivity() {
 
     private fun setupBottomNav() {
         binding.navWatchList.setOnClickListener {
-            Toast.makeText(this, "Watchlist screen coming soon", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, WatchlistActivity::class.java))
         }
         binding.navFavorites.setOnClickListener {
             Toast.makeText(this, "Favorites screen coming soon", Toast.LENGTH_SHORT).show()
