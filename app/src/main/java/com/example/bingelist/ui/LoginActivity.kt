@@ -15,11 +15,11 @@ import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var auth: FirebaseAuth
+    // Initialized safely so it is always ready before onStart()
+    private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
 
     override fun onStart() {
         super.onStart()
-        // Automatically skip login if already signed in
         if (auth.currentUser != null) {
             startActivity(Intent(this, DiscoverActivity::class.java))
             finish()
@@ -29,8 +29,6 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
-        auth = FirebaseAuth.getInstance()
 
         val etEmail = findViewById<EditText>(R.id.etLoginEmail)
         val etPassword = findViewById<EditText>(R.id.etLoginPassword)
@@ -43,7 +41,7 @@ class LoginActivity : AppCompatActivity() {
             val password = etPassword.text.toString().trim()
 
             if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please enter both email and password", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -62,7 +60,7 @@ class LoginActivity : AppCompatActivity() {
                     } else {
                         Toast.makeText(
                             this,
-                            task.exception?.localizedMessage ?: "Login failed",
+                            task.exception?.localizedMessage ?: "Authentication failed",
                             Toast.LENGTH_LONG
                         ).show()
                     }

@@ -1,16 +1,18 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Base application theme (Dark / Night) -->
     <style name="Theme.BingeList.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/black</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+        <!-- Brand Colors -->
+        <item name="colorPrimary">@color/binge_red</item>
+        <item name="colorPrimaryVariant">#B00710</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <!-- Secondary Accent Colors -->
+        <item name="colorSecondary">@color/binge_red</item>
+        <item name="colorSecondaryVariant">#B00710</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        <!-- Surfaces & Status Bar -->
+        <item name="android:windowBackground">@color/binge_surface</item>
+        <item name="android:statusBarColor">@color/binge_surface</item>
     </style>
 </resources>

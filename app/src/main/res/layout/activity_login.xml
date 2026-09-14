@@ -16,7 +16,8 @@
         android:layout_marginBottom="16dp"
         android:scaleType="centerCrop"
         android:src="@drawable/app_logo"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.MaterialComponents.SmallComponent"
+        app:cornerSize="50%" />
 
     <TextView
         android:layout_width="wrap_content"

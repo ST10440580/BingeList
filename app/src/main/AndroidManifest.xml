@@ -10,36 +10,38 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:label="Discover"
+        android:label="Binge List"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BingeList.NoActionBar">
-        <!-- 1. LOGIN IS THE LAUNCHER -->
+
+        <!-- Login is the starting screen -->
         <activity
             android:name=".ui.LoginActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
-        <!-- 2. REGISTER SCREEN -->
+        <!-- Register -->
         <activity
             android:name=".ui.RegisterActivity"
             android:exported="false" />
+
+        <!-- Movie Details -->
         <activity
             android:name=".ui.details.MovieDetailsActivity"
             android:exported="false" />
+
+        <!-- Discover -->
         <activity
             android:name=".ui.discover.DiscoverActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="false" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>
