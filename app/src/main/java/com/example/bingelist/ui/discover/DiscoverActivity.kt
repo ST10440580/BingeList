@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bingelist.databinding.ActivityDiscoverBinding
+import com.example.bingelist.ui.settings.SettingsActivity
 import com.example.bingelist.ui.watchlist.WatchlistActivity
 import kotlinx.coroutines.launch
 
@@ -89,7 +90,7 @@ class DiscoverActivity : AppCompatActivity() {
             Toast.makeText(this, "Favorites screen coming soon", Toast.LENGTH_SHORT).show()
         }
         binding.navSettings.setOnClickListener {
-            Toast.makeText(this, "Settings screen coming soon", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
     }
 

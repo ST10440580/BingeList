@@ -13,6 +13,7 @@ import com.example.bingelist.databinding.ActivityWatchlistBinding
 import com.example.bingelist.ui.details.MovieDetailsActivity
 import com.example.bingelist.ui.discover.DiscoverActivity
 import com.example.bingelist.ui.discover.MovieCardAdapter
+import com.example.bingelist.ui.settings.SettingsActivity
 import kotlinx.coroutines.launch
 
 class WatchlistActivity : AppCompatActivity() {
@@ -57,7 +58,7 @@ class WatchlistActivity : AppCompatActivity() {
             // Placeholder
         }
         binding.navSettings.setOnClickListener {
-            // Placeholder
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
     }
 
