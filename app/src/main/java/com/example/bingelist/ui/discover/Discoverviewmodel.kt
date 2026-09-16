@@ -54,6 +54,10 @@ class DiscoverViewModel(
         }
     }
 
+    fun refreshState() {
+        render()
+    }
+
     fun searchMovies(query: String) {
         val trimmed = query.trim()
         lastQuery = trimmed
