@@ -17,7 +17,7 @@
 
         <!-- Login is the starting screen -->
         <activity
-            android:name=".ui.LoginActivity"
+            android:name=".ui.account.LoginActivity"
             android:exported="true">
 
             <intent-filter>
@@ -29,7 +29,7 @@
 
         <!-- Register -->
         <activity
-            android:name=".ui.RegisterActivity"
+            android:name=".ui.account.RegisterActivity"
             android:exported="false" />
 
         <!-- Movie Details -->

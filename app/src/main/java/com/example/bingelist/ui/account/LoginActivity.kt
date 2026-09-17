@@ -1,4 +1,4 @@
-package com.example.bingelist.ui
+package com.example.bingelist.ui.account
 
 import android.content.Intent
 import android.os.Bundle
