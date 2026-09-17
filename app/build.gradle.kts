@@ -50,6 +50,7 @@ dependencies {
     //Firebase Authentication:
     implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
     implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
 
 
     // Networking — talks to OMDb

@@ -36,6 +36,21 @@ class DiscoverActivity : AppCompatActivity() {
         setupSearchView()
         setupBottomNav()
         observeViewModel()
+    val currentUser = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+    if (currentUser != null) {
+        com.google.firebase.firestore.FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(currentUser.uid)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val firstName = document.getString("firstName") ?: ""
+                    if (firstName.isNotBlank()) {
+                        binding.appSubtitle.text = "Welcome back, $firstName!"
+                    }
+                }
+            }
+    }
     }
 
     override fun onResume() {

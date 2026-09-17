@@ -3,23 +3,20 @@ package com.example.bingelist.ui
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.EditText
-import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.bingelist.R
+import com.example.bingelist.databinding.ActivityLoginBinding
 import com.example.bingelist.ui.discover.DiscoverActivity
-import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
 
-    // Initialized safely so it is always ready before onStart()
+    private lateinit var binding: ActivityLoginBinding
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
 
     override fun onStart() {
         super.onStart()
+        // Auto-login if user is already signed in
         if (auth.currentUser != null) {
             startActivity(Intent(this, DiscoverActivity::class.java))
             finish()
@@ -28,35 +25,31 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val etEmail = findViewById<EditText>(R.id.etLoginEmail)
-        val etPassword = findViewById<EditText>(R.id.etLoginPassword)
-        val btnLogin = findViewById<MaterialButton>(R.id.btnLogin)
-        val progressBar = findViewById<ProgressBar>(R.id.loginProgressBar)
-        val tvGoToRegister = findViewById<TextView>(R.id.tvGoToRegister)
-
-        btnLogin.setOnClickListener {
-            val email = etEmail.text.toString().trim()
-            val password = etPassword.text.toString().trim()
+        binding.btnLogin.setOnClickListener {
+            val email = binding.etLoginEmail.text.toString().trim()
+            val password = binding.etLoginPassword.text.toString() // Kept exact without trimming
 
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            progressBar.visibility = View.VISIBLE
-            btnLogin.isEnabled = false
+            binding.loginProgressBar.visibility = View.VISIBLE
+            binding.btnLogin.isEnabled = false
 
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
-                    progressBar.visibility = View.GONE
-                    btnLogin.isEnabled = true
+                    binding.loginProgressBar.visibility = View.GONE
+                    binding.btnLogin.isEnabled = true
 
                     if (task.isSuccessful) {
                         Toast.makeText(this, "Welcome back!", Toast.LENGTH_SHORT).show()
-                        startActivity(Intent(this, DiscoverActivity::class.java))
-                        finish()
+                        val intent = Intent(this, DiscoverActivity::class.java)
+                        startActivity(intent)
+                        finishAffinity() // Clears the backstack completely
                     } else {
                         Toast.makeText(
                             this,
@@ -67,7 +60,7 @@ class LoginActivity : AppCompatActivity() {
                 }
         }
 
-        tvGoToRegister.setOnClickListener {
+        binding.tvGoToRegister.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
     }
