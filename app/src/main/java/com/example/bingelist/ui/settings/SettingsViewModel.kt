@@ -25,6 +25,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             notificationsEnabled = prefs.getBoolean("notifications", true)
         )
     )
+
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
 
     fun selectLanguage(language: String) {

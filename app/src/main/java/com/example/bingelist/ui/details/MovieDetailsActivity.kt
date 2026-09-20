@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
@@ -32,10 +33,17 @@ class MovieDetailsActivity : AppCompatActivity() {
 
         binding.backButton.setOnClickListener { finish() }
         binding.favoriteIcon.setOnClickListener { viewModel.toggleFavorite() }
-        binding.watchlistButton.setOnClickListener { viewModel.toggleWatchlist() }
+        binding.watchlistButton.setOnClickListener {
+            Toast.makeText(this, "Watchlist coming soon", Toast.LENGTH_SHORT).show()
+        }
 
         observeState()
         viewModel.loadMovie(imdbId)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshFavorite()
     }
 
     private fun observeState() {
@@ -76,18 +84,6 @@ class MovieDetailsActivity : AppCompatActivity() {
                 binding.favoriteIcon.setImageResource(
                     if (state.isFavorite) R.drawable.ic_star_filled else R.drawable.ic_star_outline
                 )
-
-                if (state.isInWatchlist) {
-                    binding.watchlistButton.setBackgroundResource(R.drawable.chip_background_unselected)
-                    binding.watchlistIcon.setImageResource(R.drawable.ic_check_small)
-                    binding.watchlistText.text = "In watchlist"
-                    binding.watchlistText.setTextColor(getColor(R.color.bl_chip_unselected_text))
-                } else {
-                    binding.watchlistButton.setBackgroundResource(R.drawable.chip_background_selected)
-                    binding.watchlistIcon.setImageResource(R.drawable.ic_add_small)
-                    binding.watchlistText.text = "Add to watchlist"
-                    binding.watchlistText.setTextColor(getColor(R.color.bl_chip_selected_text))
-                }
             }
         }
     }

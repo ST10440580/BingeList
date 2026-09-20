@@ -14,44 +14,34 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BingeList.NoActionBar">
-
+        <activity
+            android:name=".ui.favorites.FavoritesActivity"
+            android:exported="false" />
         <!-- Login is the starting screen -->
         <activity
             android:name=".ui.account.LoginActivity"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-        </activity>
-
-        <!-- Register -->
+        </activity> <!-- Register -->
         <activity
             android:name=".ui.account.RegisterActivity"
-            android:exported="false" />
-
-        <!-- Movie Details -->
+            android:exported="false" /> <!-- Movie Details -->
         <activity
             android:name=".ui.details.MovieDetailsActivity"
-            android:exported="false" />
-
-        <!-- Discover -->
+            android:exported="false" /> <!-- Discover -->
         <activity
             android:name=".ui.discover.DiscoverActivity"
-            android:exported="false" />
-
-        <!-- WatchList -->
+            android:exported="false" /> <!-- WatchList -->
         <activity
-             android:name=".ui.watchlist.WatchlistActivity"
-             android:exported="false" />
-
-        <!-- Settings -->
+            android:name=".ui.watchlist.WatchlistActivity"
+            android:exported="false" /> <!-- Settings -->
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:exported="false" />
-
     </application>
 
 </manifest>

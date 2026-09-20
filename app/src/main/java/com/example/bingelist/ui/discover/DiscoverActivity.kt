@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bingelist.databinding.ActivityDiscoverBinding
+import com.example.bingelist.ui.favorites.FavoritesActivity
 import com.example.bingelist.ui.settings.SettingsActivity
 import com.example.bingelist.ui.watchlist.WatchlistActivity
 import kotlinx.coroutines.launch
@@ -55,7 +56,7 @@ class DiscoverActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.refreshState()
+        viewModel.refreshFavorites()
     }
 
     private fun setupNewThisWeek() {
@@ -80,7 +81,7 @@ class DiscoverActivity : AppCompatActivity() {
         resultsAdapter = MovieCardAdapter(
             onCardClick = { movie -> com.example.bingelist.ui.details.MovieDetailsActivity.start(this, movie.imdbId) },
             onFavoriteClick = { movie -> viewModel.toggleFavorite(movie.imdbId) },
-            onWatchlistClick = { movie -> viewModel.toggleWatchlist(movie.imdbId) }
+            onWatchlistClick = { _ -> Toast.makeText(this, "Watchlist coming soon", Toast.LENGTH_SHORT).show() }
         )
         binding.movieRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.movieRecyclerView.adapter = resultsAdapter
@@ -106,6 +107,10 @@ class DiscoverActivity : AppCompatActivity() {
         }
         binding.navSettings.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
+        }
+
+        binding.navFavorites.setOnClickListener {
+            startActivity(Intent(this, FavoritesActivity::class.java))
         }
     }
 

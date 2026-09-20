@@ -1,15 +1,21 @@
 package com.example.bingelist.ui.discover
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.bingelist.data.database.BingeListDatabaseHelper
 import com.example.bingelist.data.model.MovieCardUiModel
 import com.example.bingelist.data.model.MovieDetail
 import com.example.bingelist.data.model.toCardUiModel
+import com.example.bingelist.data.remote.FavoritesCloudSync
 import com.example.bingelist.data.repository.MovieRepository
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 sealed class DiscoverUiState {
     object Idle : DiscoverUiState()
@@ -19,9 +25,15 @@ sealed class DiscoverUiState {
     data class Error(val message: String) : DiscoverUiState()
 }
 
-class DiscoverViewModel(
-    private val repository: MovieRepository = MovieRepository()
-) : ViewModel() {
+class DiscoverViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val repository = MovieRepository()
+    private val dbHelper = BingeListDatabaseHelper(application)
+    private val cloudSync = FavoritesCloudSync()
+    private val auth = FirebaseAuth.getInstance()
+
+    private val currentUserId: String?
+        get() = auth.currentUser?.uid
 
     private val _uiState = MutableStateFlow<DiscoverUiState>(DiscoverUiState.Idle)
     val uiState: StateFlow<DiscoverUiState> = _uiState.asStateFlow()
@@ -32,30 +44,49 @@ class DiscoverViewModel(
     private val _selectedGenre = MutableStateFlow(GENRES.first())
     val selectedGenre: StateFlow<String> = _selectedGenre.asStateFlow()
 
-    // In-memory for now — swap for Room/Firestore when the Favorites/Watchlist
-    // screens are built, per the Part 1 data model.
-    private val favorites = mutableSetOf<String>()
-    private val watchlist = mutableSetOf<String>()
-
     private var lastQuery = ""
-    private var allDetails: List<MovieDetail> = emptyList()
+    private val knownDetails = mutableMapOf<String, MovieDetail>()
+    private var currentSearchIds: List<String> = emptyList()
+    private var newThisWeekIds: List<String> = emptyList()
+    private var favoriteIds: Set<String> = emptySet()
 
     init {
+        refreshFavorites()
         loadNewThisWeek()
+    }
+
+    /** Re-reads this user's favorites from SQLite. Call from the Activity's onResume
+     *  so changes made on other screens (e.g. un-favoriting from Favorites) show up here. */
+    fun refreshFavorites() {
+        val uid = currentUserId
+        if (uid == null) {
+            favoriteIds = emptySet()
+            render()
+            applyFlagsToNewThisWeek()
+            return
+        }
+        viewModelScope.launch {
+            favoriteIds = withContext(Dispatchers.IO) { dbHelper.getFavoriteIds(uid).toSet() }
+            render()
+            applyFlagsToNewThisWeek()
+        }
     }
 
     private fun loadNewThisWeek() {
         viewModelScope.launch {
             val ids = repository.getWeeklyNewReleaseIds(limit = 4)
+            newThisWeekIds = ids
             val details = repository.getMovieDetailsByIds(ids)
-            _newThisWeek.value = details.map {
-                it.toCardUiModel(favorites.contains(it.imdbId), watchlist.contains(it.imdbId))
-            }
+            details.forEach { knownDetails[it.imdbId] = it }
+            applyFlagsToNewThisWeek()
         }
     }
 
-    fun refreshState() {
-        render()
+    private fun applyFlagsToNewThisWeek() {
+        val details = newThisWeekIds.mapNotNull { knownDetails[it] }
+        if (details.isNotEmpty()) {
+            _newThisWeek.value = details.map { it.toCardUiModel(isFavorite = favoriteIds.contains(it.imdbId)) }
+        }
     }
 
     fun searchMovies(query: String) {
@@ -63,7 +94,7 @@ class DiscoverViewModel(
         lastQuery = trimmed
 
         if (trimmed.isEmpty()) {
-            allDetails = emptyList()
+            currentSearchIds = emptyList()
             _uiState.value = DiscoverUiState.Idle
             return
         }
@@ -72,11 +103,13 @@ class DiscoverViewModel(
         viewModelScope.launch {
             repository.searchMovies(trimmed)
                 .onSuccess { summaries ->
-                    allDetails = repository.getMovieDetailsBatch(summaries)
+                    val details = repository.getMovieDetailsBatch(summaries)
+                    details.forEach { knownDetails[it.imdbId] = it }
+                    currentSearchIds = details.map { it.imdbId }
                     render()
                 }
                 .onFailure { error ->
-                    allDetails = emptyList()
+                    currentSearchIds = emptyList()
                     _uiState.value = DiscoverUiState.Error(error.message ?: "Something went wrong. Please try again.")
                 }
         }
@@ -88,24 +121,26 @@ class DiscoverViewModel(
     }
 
     fun toggleFavorite(imdbId: String) {
-        if (!favorites.add(imdbId)) favorites.remove(imdbId)
-        render()
-        _newThisWeek.value = _newThisWeek.value.map {
-            if (it.imdbId == imdbId) it.copy(isFavorite = favorites.contains(imdbId)) else it
+        val detail = knownDetails[imdbId] ?: return
+        val uid = currentUserId ?: return
+        viewModelScope.launch {
+            val nowFavorite = withContext(Dispatchers.IO) {
+                dbHelper.cacheMovie(detail)
+                val wasFavorite = dbHelper.isFavorite(uid, imdbId)
+                if (wasFavorite) dbHelper.removeFromFavorites(uid, imdbId)
+                else dbHelper.addToFavorites(uid, imdbId)
+                !wasFavorite
+            }
+            refreshFavorites()
+            runCatching { cloudSync.pushFavorite(uid, imdbId, nowFavorite) }
         }
-    }
-
-    fun toggleWatchlist(imdbId: String) {
-        if (!watchlist.add(imdbId)) watchlist.remove(imdbId)
-        render()
     }
 
     private fun render() {
         val genre = _selectedGenre.value
-        val filtered = if (genre == "All") {
-            allDetails
-        } else {
-            allDetails.filter { it.genre?.contains(genre, ignoreCase = true) == true }
+        val details = currentSearchIds.mapNotNull { knownDetails[it] }
+        val filtered = if (genre == "All") details else details.filter {
+            it.genre?.contains(genre, ignoreCase = true) == true
         }
 
         _uiState.value = when {
@@ -114,15 +149,12 @@ class DiscoverViewModel(
                 if (genre == "All") "No movies found for \"$lastQuery\"." else "No $genre movies found for \"$lastQuery\"."
             )
             else -> DiscoverUiState.Success(
-                filtered.map { it.toCardUiModel(favorites.contains(it.imdbId), watchlist.contains(it.imdbId)) }
+                filtered.map { it.toCardUiModel(isFavorite = favoriteIds.contains(it.imdbId)) }
             )
         }
     }
 
     companion object {
         val GENRES = listOf("All", "Action", "Animation", "Comedy", "Drama")
-        private val NEW_THIS_WEEK_IDS = listOf(
-            "tt15239678", "tt13238346", "tt14849194", "tt9362722"
-        )
     }
 }
