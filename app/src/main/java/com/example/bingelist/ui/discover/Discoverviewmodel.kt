@@ -49,14 +49,15 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
     private var currentSearchIds: List<String> = emptyList()
     private var newThisWeekIds: List<String> = emptyList()
     private var favoriteIds: Set<String> = emptySet()
+    private var watchlistIds: Set<String> = emptySet()
 
     init {
         refreshFavorites()
+        refreshWatchlist()
         loadNewThisWeek()
     }
 
-    /** Re-reads this user's favorites from SQLite. Call from the Activity's onResume
-     *  so changes made on other screens (e.g. un-favoriting from Favorites) show up here. */
+    /** Re-reads user favorites from SQLite */
     fun refreshFavorites() {
         val uid = currentUserId
         if (uid == null) {
@@ -66,7 +67,21 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
             return
         }
         viewModelScope.launch {
-            favoriteIds = withContext(Dispatchers.IO) { dbHelper.getFavoriteIds(uid).toSet() }
+            favoriteIds = withContext(Dispatchers.IO) {
+                // If your helper supports favorites by UID:
+                runCatching { dbHelper.getFavoriteIds(uid).toSet() }.getOrDefault(emptySet())
+            }
+            render()
+            applyFlagsToNewThisWeek()
+        }
+    }
+
+    /** Re-reads watchlist from SQLite */
+    fun refreshWatchlist() {
+        viewModelScope.launch {
+            watchlistIds = withContext(Dispatchers.IO) {
+                dbHelper.getWatchlistIds().toSet()
+            }
             render()
             applyFlagsToNewThisWeek()
         }
@@ -85,7 +100,12 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
     private fun applyFlagsToNewThisWeek() {
         val details = newThisWeekIds.mapNotNull { knownDetails[it] }
         if (details.isNotEmpty()) {
-            _newThisWeek.value = details.map { it.toCardUiModel(isFavorite = favoriteIds.contains(it.imdbId)) }
+            _newThisWeek.value = details.map {
+                it.toCardUiModel(
+                    isFavorite = favoriteIds.contains(it.imdbId),
+                    isInWatchlist = watchlistIds.contains(it.imdbId)
+                )
+            }
         }
     }
 
@@ -125,14 +145,31 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
         val uid = currentUserId ?: return
         viewModelScope.launch {
             val nowFavorite = withContext(Dispatchers.IO) {
-                dbHelper.cacheMovie(detail)
-                val wasFavorite = dbHelper.isFavorite(uid, imdbId)
-                if (wasFavorite) dbHelper.removeFromFavorites(uid, imdbId)
-                else dbHelper.addToFavorites(uid, imdbId)
+                runCatching { dbHelper.cacheMovie(detail) }
+                val wasFavorite = runCatching { dbHelper.isFavorite(uid, imdbId) }.getOrDefault(false)
+                if (wasFavorite) {
+                    dbHelper.removeFromFavorites(uid, imdbId)
+                } else {
+                    dbHelper.addToFavorites(uid, imdbId)
+                }
                 !wasFavorite
             }
             refreshFavorites()
             runCatching { cloudSync.pushFavorite(uid, imdbId, nowFavorite) }
+        }
+    }
+
+    fun toggleWatchlist(imdbId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val isInWatchlist = dbHelper.isInWatchlist(imdbId)
+            if (isInWatchlist) {
+                dbHelper.removeFromWatchlist(imdbId)
+            } else {
+                dbHelper.addToWatchlist(imdbId)
+            }
+            withContext(Dispatchers.Main) {
+                refreshWatchlist()
+            }
         }
     }
 
@@ -149,7 +186,12 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
                 if (genre == "All") "No movies found for \"$lastQuery\"." else "No $genre movies found for \"$lastQuery\"."
             )
             else -> DiscoverUiState.Success(
-                filtered.map { it.toCardUiModel(isFavorite = favoriteIds.contains(it.imdbId)) }
+                filtered.map {
+                    it.toCardUiModel(
+                        isFavorite = favoriteIds.contains(it.imdbId),
+                        isInWatchlist = watchlistIds.contains(it.imdbId)
+                    )
+                }
             )
         }
     }

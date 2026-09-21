@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
+<!-- Internet access for TMDB, OMDB, and Firebase -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -26,19 +26,29 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Register -->
+        </activity>
+
+        <!--  Registration screen -->
         <activity
             android:name=".ui.account.RegisterActivity"
-            android:exported="false" /> <!-- Movie Details -->
-        <activity
-            android:name=".ui.details.MovieDetailsActivity"
-            android:exported="false" /> <!-- Discover -->
+            android:exported="false" />
+
+        <!-- Discover (Main browse screen) -->
         <activity
             android:name=".ui.discover.DiscoverActivity"
-            android:exported="false" /> <!-- WatchList -->
+            android:exported="false" />
+
+        <!-- Movie Details screen -->
+        <activity
+            android:name=".ui.details.MovieDetailsActivity"
+            android:exported="false" />
+
+        <!-- 5. Watchlist screen -->
         <activity
             android:name=".ui.watchlist.WatchlistActivity"
-            android:exported="false" /> <!-- Settings -->
+            android:exported="false" />
+
+        <!--Settings screen -->
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:exported="false" />

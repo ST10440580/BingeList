@@ -3,7 +3,6 @@ package com.example.bingelist.ui.discover
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -11,7 +10,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.bingelist.data.model.MovieCardUiModel
 import com.example.bingelist.databinding.ActivityDiscoverBinding
+import com.example.bingelist.ui.details.MovieDetailsActivity
 import com.example.bingelist.ui.favorites.FavoritesActivity
 import com.example.bingelist.ui.settings.SettingsActivity
 import com.example.bingelist.ui.watchlist.WatchlistActivity
@@ -37,31 +38,18 @@ class DiscoverActivity : AppCompatActivity() {
         setupSearchView()
         setupBottomNav()
         observeViewModel()
-    val currentUser = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
-    if (currentUser != null) {
-        com.google.firebase.firestore.FirebaseFirestore.getInstance()
-            .collection("users")
-            .document(currentUser.uid)
-            .get()
-            .addOnSuccessListener { document ->
-                if (document != null && document.exists()) {
-                    val firstName = document.getString("firstName") ?: ""
-                    if (firstName.isNotBlank()) {
-                        binding.appSubtitle.text = "Welcome back, $firstName!"
-                    }
-                }
-            }
-    }
     }
 
     override fun onResume() {
         super.onResume()
+        // Refresh watchlist and favorites status icons when returning to Discover
+        viewModel.refreshWatchlist()
         viewModel.refreshFavorites()
     }
 
     private fun setupNewThisWeek() {
         newThisWeekAdapter = PortraitPosterAdapter { movie ->
-            com.example.bingelist.ui.details.MovieDetailsActivity.start(this, movie.imdbId)
+            MovieDetailsActivity.start(this, movie.imdbId)
         }
         binding.newThisWeekRecyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -79,9 +67,9 @@ class DiscoverActivity : AppCompatActivity() {
 
     private fun setupResultsList() {
         resultsAdapter = MovieCardAdapter(
-            onCardClick = { movie -> com.example.bingelist.ui.details.MovieDetailsActivity.start(this, movie.imdbId) },
+            onCardClick = { movie -> MovieDetailsActivity.start(this, movie.imdbId) },
             onFavoriteClick = { movie -> viewModel.toggleFavorite(movie.imdbId) },
-            onWatchlistClick = { _ -> Toast.makeText(this, "Watchlist coming soon", Toast.LENGTH_SHORT).show() }
+            onWatchlistClick = { movie -> viewModel.toggleWatchlist(movie.imdbId) }
         )
         binding.movieRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.movieRecyclerView.adapter = resultsAdapter
@@ -99,18 +87,19 @@ class DiscoverActivity : AppCompatActivity() {
     }
 
     private fun setupBottomNav() {
+        // 1. Open Watchlist Activity
         binding.navWatchList.setOnClickListener {
             startActivity(Intent(this, WatchlistActivity::class.java))
         }
-        binding.navFavorites.setOnClickListener {
-            Toast.makeText(this, "Favorites screen coming soon", Toast.LENGTH_SHORT).show()
-        }
-        binding.navSettings.setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
-        }
 
+        // 2. Open Favorites Activity
         binding.navFavorites.setOnClickListener {
             startActivity(Intent(this, FavoritesActivity::class.java))
+        }
+
+        // 3. Open Settings Activity
+        binding.navSettings.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
     }
 
@@ -123,12 +112,15 @@ class DiscoverActivity : AppCompatActivity() {
         }
     }
 
-    private fun renderNewThisWeek(movies: List<com.example.bingelist.data.model.MovieCardUiModel>) {
+    private fun renderNewThisWeek(movies: List<MovieCardUiModel>) {
         newThisWeekAdapter.submitList(movies)
         binding.newThisWeekCount.text = "${movies.size} new this week"
-        binding.newThisWeekTitles.text = if (movies.isEmpty()) "Loading this week's picks…" else movies.joinToString(" · ") { it.title }
+        binding.newThisWeekTitles.text = if (movies.isEmpty()) {
+            "Loading this week's picks…"
+        } else {
+            movies.joinToString(" · ") { it.title }
+        }
     }
-
 
     private fun renderResults(state: DiscoverUiState) {
         binding.loadingIndicator.visibility = View.GONE

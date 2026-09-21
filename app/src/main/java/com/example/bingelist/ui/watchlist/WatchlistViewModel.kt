@@ -1,16 +1,19 @@
 package com.example.bingelist.ui.watchlist
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-//added import
-import com.example.bingelist.data.model.InMemoryStore
+import com.example.bingelist.data.database.BingeListDatabaseHelper
 import com.example.bingelist.data.model.MovieCardUiModel
 import com.example.bingelist.data.model.toCardUiModel
 import com.example.bingelist.data.repository.MovieRepository
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 sealed class WatchlistUiState {
     object Loading : WatchlistUiState()
@@ -20,57 +23,131 @@ sealed class WatchlistUiState {
 }
 
 class WatchlistViewModel(
-    private val repository: MovieRepository = MovieRepository()
-) : ViewModel() {
+    application: Application
+) : AndroidViewModel(application) {
 
-    private val _uiState = MutableStateFlow<WatchlistUiState>(WatchlistUiState.Loading)
-    val uiState: StateFlow<WatchlistUiState> = _uiState.asStateFlow()
+    private val repository = MovieRepository()
+    private val database = BingeListDatabaseHelper(application)
+    private val auth = FirebaseAuth.getInstance()
+
+    private val _uiState =
+        MutableStateFlow<WatchlistUiState>(WatchlistUiState.Loading)
+
+    val uiState: StateFlow<WatchlistUiState> =
+        _uiState.asStateFlow()
 
     fun loadWatchlist() {
-        val ids = InMemoryStore.watchlist.toList()
-        if (ids.isEmpty()) {
-            _uiState.value = WatchlistUiState.Empty
-            return
-        }
 
-        _uiState.value = WatchlistUiState.Loading
-        viewModelScope.launch {
-            // Check cache first for efficiency
-            val cachedDetails = ids.mapNotNull { InMemoryStore.movieCache[it] }
-            val missingIds = ids.filter { id -> !InMemoryStore.movieCache.containsKey(id) }
+        viewModelScope.launch(Dispatchers.IO) {
 
-            val allDetails = if (missingIds.isNotEmpty()) {
-                val fetchedDetails = repository.getMovieDetailsByIds(missingIds)
-                fetchedDetails.forEach { InMemoryStore.movieCache[it.imdbId] = it }
-                (cachedDetails + fetchedDetails).sortedBy { ids.indexOf(it.imdbId) }
-            } else {
-                cachedDetails
-            }
+            _uiState.value = WatchlistUiState.Loading
 
-            if (allDetails.isEmpty() && ids.isNotEmpty()) {
-                 _uiState.value = WatchlistUiState.Error("Could not load watchlist items.")
-            } else if (allDetails.isEmpty()) {
-                _uiState.value = WatchlistUiState.Empty
-            } else {
-                _uiState.value = WatchlistUiState.Success(
-                    allDetails.map { it.toCardUiModel(
-                        isFavorite = InMemoryStore.favorites.contains(it.imdbId),
-                        isInWatchlist = true
-                    )}
-                )
+            try {
+
+                // Get movie IDs saved in the SQLite watchlist table
+                val ids = database.getWatchlistIds()
+
+                if (ids.isEmpty()) {
+                    _uiState.value = WatchlistUiState.Empty
+                    return@launch
+                }
+
+                // First try to load movie details from SQLite cache
+                val cachedMovies = database.getCachedMovies(ids)
+
+                val cachedIds = cachedMovies
+                    .map { it.imdbId }
+                    .toSet()
+
+                // Find movies that are not stored locally yet
+                val missingIds = ids.filterNot {
+                    cachedIds.contains(it)
+                }
+
+                // Fetch missing movie details from OMDb
+                val fetchedMovies =
+                    if (missingIds.isNotEmpty()) {
+                        repository.getMovieDetailsByIds(missingIds)
+                    } else {
+                        emptyList()
+                    }
+
+                // Save newly fetched movies into SQLite cache
+                fetchedMovies.forEach {
+                    database.cacheMovie(it)
+                }
+
+                // Combine cached and newly fetched movies
+                val allMovies = (cachedMovies + fetchedMovies)
+                    .associateBy { it.imdbId }
+                    .let { movieMap ->
+                        ids.mapNotNull { movieMap[it] }
+                    }
+
+                if (allMovies.isEmpty()) {
+                    _uiState.value =
+                        WatchlistUiState.Error(
+                            "Could not load watchlist items."
+                        )
+                    return@launch
+                }
+
+                // Get the user's favourites from SQLite
+                val userId = auth.currentUser?.uid
+
+                val favoriteIds =
+                    if (userId != null) {
+                        database.getFavoriteIds(userId).toSet()
+                    } else {
+                        emptySet()
+                    }
+
+                _uiState.value =
+                    WatchlistUiState.Success(
+                        allMovies.map { movie ->
+                            movie.toCardUiModel(
+                                isFavorite = favoriteIds.contains(movie.imdbId),
+                                isInWatchlist = true
+                            )
+                        }
+                    )
+
+            } catch (e: Exception) {
+
+                _uiState.value =
+                    WatchlistUiState.Error(
+                        e.message ?: "Could not load watchlist."
+                    )
             }
         }
     }
 
     fun toggleFavorite(imdbId: String) {
-        if (!InMemoryStore.favorites.add(imdbId)) {
-            InMemoryStore.favorites.remove(imdbId)
+
+        val userId = auth.currentUser?.uid ?: return
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            val isFavorite =
+                database.isFavorite(userId, imdbId)
+
+            if (isFavorite) {
+                database.removeFromFavorites(userId, imdbId)
+            } else {
+                database.addToFavorites(userId, imdbId)
+            }
+
+            loadWatchlist()
         }
-        loadWatchlist() // Refresh to update favorite icon
     }
 
     fun removeFromWatchlist(imdbId: String) {
-        InMemoryStore.watchlist.remove(imdbId)
-        loadWatchlist()
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            database.removeFromWatchlist(imdbId)
+
+            loadWatchlist()
+        }
     }
 }

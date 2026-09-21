@@ -1,17 +1,15 @@
 package com.example.bingelist.data.database
-// BingeListDatabaseHelper.kt
+
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.bingelist.data.model.MovieDetail
 
-
 class BingeListDatabaseHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     override fun onCreate(db: SQLiteDatabase) {
-
         val createWatchlistTable = """
             CREATE TABLE $TABLE_WATCHLIST (
                 $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -60,7 +58,7 @@ class BingeListDatabaseHelper(context: Context) :
         onCreate(db)
     }
 
-    //Watchlist
+    // --- Watchlist ---
 
     fun addToWatchlist(imdbId: String): Boolean {
         val db = writableDatabase
@@ -99,7 +97,7 @@ class BingeListDatabaseHelper(context: Context) :
         return ids
     }
 
-    //Favorites
+    // --- Favorites ---
 
     fun addToFavorites(userId: String, imdbId: String): Boolean {
         val db = writableDatabase
@@ -148,7 +146,7 @@ class BingeListDatabaseHelper(context: Context) :
         return ids
     }
 
-    //Movie detail cache
+    // --- Movie Detail Cache ---
 
     fun cacheMovie(movie: MovieDetail) {
         val db = writableDatabase
@@ -190,7 +188,7 @@ class BingeListDatabaseHelper(context: Context) :
         while (cursor.moveToNext()) results.add(cursor.toMovieDetail())
         cursor.close()
         val byId = results.associateBy { it.imdbId }
-        return imdbIds.mapNotNull { byId[it] } // preserves caller's ordering
+        return imdbIds.mapNotNull { byId[it] }
     }
 
     private fun android.database.Cursor.toMovieDetail() = MovieDetail(
@@ -211,7 +209,6 @@ class BingeListDatabaseHelper(context: Context) :
         imdbId = getString(getColumnIndexOrThrow(COLUMN_CACHE_IMDB_ID)),
         response = "True"
     )
-
 
     companion object {
         private const val DATABASE_NAME = "bingelist.db"
