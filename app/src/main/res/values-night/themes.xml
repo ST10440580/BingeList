@@ -1,18 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme (Dark / Night) -->
     <style name="Theme.BingeList.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Brand Colors -->
-        <item name="colorPrimary">@color/binge_red</item>
-        <item name="colorPrimaryVariant">#B00710</item>
+        <item name="colorPrimary">@color/binge_olive_primary</item>
+        <item name="colorPrimaryVariant">@color/binge_olive_pressed</item>
         <item name="colorOnPrimary">@color/white</item>
 
         <!-- Secondary Accent Colors -->
-        <item name="colorSecondary">@color/binge_red</item>
-        <item name="colorSecondaryVariant">#B00710</item>
-        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSecondary">@color/binge_sage_secondary</item>
+        <item name="colorSecondaryVariant">@color/binge_olive_primary</item>
+        <item name="colorOnSecondary">@color/binge_text_title</item>
 
         <!-- Surfaces & Status Bar -->
-        <item name="android:windowBackground">@color/binge_surface</item>
-        <item name="android:statusBarColor">@color/binge_surface</item>
+        <item name="android:windowBackground">@color/binge_cream_bg</item>
+        <item name="android:statusBarColor">@color/binge_cream_bg</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
 </resources>

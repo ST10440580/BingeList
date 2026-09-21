@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- Figma Theme Palette -->
-    <color name="binge_cream_bg">#F2EFE4</color>
-    <color name="binge_card_bg">#FFFFFF</color>
-    <color name="binge_olive_primary">#3F4C33</color>
-    <color name="binge_olive_pressed">#2E3825</color>
-    <color name="binge_sage_secondary">#D6DEC7</color>
-    <color name="binge_input_bg">#E8ECE0</color>
-    <color name="binge_badge_bg">#E2E8D7</color>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme matching Figma cream & olive branding -->
+    <style name="Theme.BingeList.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Brand Colors -->
+        <item name="colorPrimary">@color/binge_olive_primary</item>
+        <item name="colorPrimaryVariant">@color/binge_olive_pressed</item>
+        <item name="colorOnPrimary">@color/white</item>
 
-    <!-- Typography -->
-    <color name="binge_text_title">#20241B</color>
-    <color name="binge_text_body">#5B6252</color>
-    <color name="binge_text_muted">#7C8375</color>
-    <color name="binge_gold_star">#F4B400</color>
+        <!-- Accent Colors -->
+        <item name="colorSecondary">@color/binge_sage_secondary</item>
+        <item name="colorSecondaryVariant">@color/binge_olive_primary</item>
+        <item name="colorOnSecondary">@color/binge_text_title</item>
 
-    <!-- Fallback / Compatibility -->
-    <color name="white">#FFFFFF</color>
-    <color name="black">#000000</color>
+        <!-- Background & Status Bar -->
+        <item name="android:windowBackground">@color/binge_cream_bg</item>
+        <item name="android:statusBarColor">@color/binge_cream_bg</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+    </style>
 </resources>

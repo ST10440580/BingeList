@@ -10,12 +10,12 @@ import com.google.firebase.auth.FirebaseAuth
 class WelcomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityWelcomeBinding
-    private val auth = FirebaseAuth.getInstance()
+    private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Automatically bypass welcome if user is already authenticated
+        // Skip welcome if the user is already logged in
         if (auth.currentUser != null) {
             startActivity(Intent(this, DiscoverActivity::class.java))
             finish()
@@ -25,17 +25,14 @@ class WelcomeActivity : AppCompatActivity() {
         binding = ActivityWelcomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Navigate to Register Screen
         binding.btnWelcomeRegister.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
 
-        // Navigate to Login Screen
         binding.btnWelcomeLogin.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
         }
 
-        // Continue without signing in (direct to Discover)
         binding.tvContinueWithoutAccount.setOnClickListener {
             startActivity(Intent(this, DiscoverActivity::class.java))
             finish()

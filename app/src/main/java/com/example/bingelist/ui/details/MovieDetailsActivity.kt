@@ -71,8 +71,8 @@ class MovieDetailsActivity : AppCompatActivity() {
                 binding.metaText.text = "${movie.year} · ${movie.runtime ?: "—"}"
                 binding.ratingText.text = movie.imdbRating ?: "—"
                 binding.plotText.text = movie.plot ?: "No description available."
-                binding.directorText.text = "Director: ${movie.director ?: "Unknown"}"
-                binding.actorsText.text = "Starring: ${movie.actors ?: "Unknown"}"
+                //binding.directorText.text = "Director: ${movie.director ?: "Unknown"}"
+                //binding.actorsText.text = "Starring: ${movie.actors ?: "Unknown"}"
 
                 Glide.with(binding.posterImage)
                     .load(movie.posterUrlOrNull)
