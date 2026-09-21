@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-<!-- Internet access for TMDB, OMDB, and Firebase -->
+
+    <!-- Internet access for TMDB, OMDB, and Firebase -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -14,25 +15,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BingeList.NoActionBar">
+
+        <!-- Welcome / Splash Screen (App Entry Point) -->
         <activity
-            android:name=".ui.favorites.FavoritesActivity"
-            android:exported="false" />
-        <!-- Login is the starting screen -->
-        <activity
-            android:name=".ui.account.LoginActivity"
+            android:name=".ui.account.WelcomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!--  Registration screen -->
+        <!-- Login Screen -->
+        <activity
+            android:name=".ui.account.LoginActivity"
+            android:exported="false" />
+
+        <!-- Registration Screen -->
         <activity
             android:name=".ui.account.RegisterActivity"
             android:exported="false" />
-        <!-- Profile screen -->
+
+        <!-- Profile Screen -->
         <activity
             android:name=".ui.account.ProfileActivity"
             android:exported="false" />
@@ -42,24 +46,26 @@
             android:name=".ui.discover.DiscoverActivity"
             android:exported="false" />
 
-        <!-- Movie Details screen -->
+        <!-- Movie Details Screen -->
         <activity
             android:name=".ui.details.MovieDetailsActivity"
             android:exported="false" />
 
-        <!--  Watchlist screen -->
+        <!-- Watchlist Screen -->
         <activity
             android:name=".ui.watchlist.WatchlistActivity"
             android:exported="false" />
-        <!-- Favorites screen -->
+
+        <!-- Favorites Screen -->
         <activity
             android:name=".ui.favorites.FavoritesActivity"
             android:exported="false" />
 
-        <!--Settings screen -->
+        <!-- Settings Screen -->
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:exported="false" />
+
     </application>
 
 </manifest>

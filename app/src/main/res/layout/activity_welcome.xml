@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/binge_cream_bg"
+    android:orientation="vertical">
+
+    <!-- Top Header Branding -->
+    <include layout="@layout/layout_binge_header" />
+
+    <!-- Center Content -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="28dp">
+
+        <!-- App Logo Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_marginBottom="28dp"
+            app:cardCornerRadius="22dp"
+            app:cardElevation="3dp">
+
+            <ImageView
+                android:id="@+id/ivWelcomeLogo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/app_logo" />
+        </androidx.cardview.widget.CardView>
+
+        <!-- Welcome Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Welcome to Binge List"
+            android:textColor="@color/binge_text_title"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <!-- Subtitle -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="36dp"
+            android:text="Your next movie night, already sorted."
+            android:textColor="@color/binge_text_body"
+            android:textSize="14sp" />
+
+        <!-- Create Account Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnWelcomeRegister"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Create an account"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/binge_olive_primary"
+            app:cornerRadius="26dp" />
+
+        <!-- I Already Have an Account Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnWelcomeLogin"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="12dp"
+            android:text="I already have an account"
+            android:textAllCaps="false"
+            android:textColor="@color/binge_text_title"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/binge_sage_secondary"
+            app:cornerRadius="26dp" />
+
+        <!-- Continue Without an Account -->
+        <TextView
+            android:id="@+id/tvContinueWithoutAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:padding="8dp"
+            android:text="Continue without an account"
+            android:textColor="@color/binge_text_body"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+</LinearLayout>

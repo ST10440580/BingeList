@@ -1,18 +1,21 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme -->
-    <style name="Theme.BingeList.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Brand Colors -->
-        <item name="colorPrimary">@color/binge_red</item>
-        <item name="colorPrimaryVariant">#B00710</item>
-        <item name="colorOnPrimary">@color/white</item>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Figma Theme Palette -->
+    <color name="binge_cream_bg">#F2EFE4</color>
+    <color name="binge_card_bg">#FFFFFF</color>
+    <color name="binge_olive_primary">#3F4C33</color>
+    <color name="binge_olive_pressed">#2E3825</color>
+    <color name="binge_sage_secondary">#D6DEC7</color>
+    <color name="binge_input_bg">#E8ECE0</color>
+    <color name="binge_badge_bg">#E2E8D7</color>
 
-        <!-- Accent Colors -->
-        <item name="colorSecondary">@color/binge_red</item>
-        <item name="colorSecondaryVariant">#B00710</item>
-        <item name="colorOnSecondary">@color/white</item>
+    <!-- Typography -->
+    <color name="binge_text_title">#20241B</color>
+    <color name="binge_text_body">#5B6252</color>
+    <color name="binge_text_muted">#7C8375</color>
+    <color name="binge_gold_star">#F4B400</color>
 
-        <!-- Dark Background & Status Bar -->
-        <item name="android:windowBackground">@color/binge_surface</item>
-        <item name="android:statusBarColor">@color/binge_surface</item>
-    </style>
+    <!-- Fallback / Compatibility -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
 </resources>
