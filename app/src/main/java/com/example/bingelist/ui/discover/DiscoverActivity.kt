@@ -31,6 +31,9 @@ class DiscoverActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDiscoverBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.btnProfile.setOnClickListener {
+            startActivity(Intent(this, com.example.bingelist.ui.account.ProfileActivity::class.java))
+        }
 
         setupNewThisWeek()
         setupGenreChips()
@@ -58,6 +61,9 @@ class DiscoverActivity : AppCompatActivity() {
 
     private fun setupGenreChips() {
         genreAdapter = GenreAdapter(DiscoverViewModel.GENRES) { genre ->
+            // Clear manual search query so category browsing takes over
+            binding.searchView.setQuery("", false)
+            binding.searchView.clearFocus()
             viewModel.selectGenre(genre)
         }
         binding.genreRecyclerView.layoutManager =
@@ -82,7 +88,13 @@ class DiscoverActivity : AppCompatActivity() {
                 return true
             }
 
-            override fun onQueryTextChange(newText: String?): Boolean = false
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // If user clears the text with backspace or (X), restore the current genre view
+                if (newText.isNullOrBlank()) {
+                    viewModel.searchMovies("")
+                }
+                return false
+            }
         })
     }
 

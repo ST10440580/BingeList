@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.bingelist.data.database.BingeListDatabaseHelper
 import com.example.bingelist.data.model.MovieCardUiModel
 import com.example.bingelist.data.model.MovieDetail
+import com.example.bingelist.data.model.MovieSummary
 import com.example.bingelist.data.model.toCardUiModel
 import com.example.bingelist.data.remote.FavoritesCloudSync
 import com.example.bingelist.data.repository.MovieRepository
@@ -35,7 +36,7 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
     private val currentUserId: String?
         get() = auth.currentUser?.uid
 
-    private val _uiState = MutableStateFlow<DiscoverUiState>(DiscoverUiState.Idle)
+    private val _uiState = MutableStateFlow<DiscoverUiState>(DiscoverUiState.Loading)
     val uiState: StateFlow<DiscoverUiState> = _uiState.asStateFlow()
 
     private val _newThisWeek = MutableStateFlow<List<MovieCardUiModel>>(emptyList())
@@ -46,15 +47,26 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
 
     private var lastQuery = ""
     private val knownDetails = mutableMapOf<String, MovieDetail>()
-    private var currentSearchIds: List<String> = emptyList()
+    private var currentMovieIds: List<String> = emptyList()
     private var newThisWeekIds: List<String> = emptyList()
     private var favoriteIds: Set<String> = emptySet()
     private var watchlistIds: Set<String> = emptySet()
+
+    // Representative franchises/titles that guarantee rich, genre-matched results
+    private val genreKeywords = mapOf(
+        "All" to listOf("Avengers", "Batman"),
+        "Action" to listOf("John Wick", "Fast"),
+        "Animation" to listOf("Toy Story", "Shrek"),
+        "Comedy" to listOf("Hangover", "Superbad"),
+        "Drama" to listOf("Godfather", "Shawshank")
+    )
 
     init {
         refreshFavorites()
         refreshWatchlist()
         loadNewThisWeek()
+        // Automatically load "All" category movies on launch
+        loadGenreMovies(GENRES.first())
     }
 
     /** Re-reads user favorites from SQLite */
@@ -68,7 +80,6 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
         }
         viewModelScope.launch {
             favoriteIds = withContext(Dispatchers.IO) {
-                // If your helper supports favorites by UID:
                 runCatching { dbHelper.getFavoriteIds(uid).toSet() }.getOrDefault(emptySet())
             }
             render()
@@ -109,13 +120,47 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    /** Called when the user taps any genre button (Action, Drama, Comedy, etc.) */
+    fun selectGenre(genre: String) {
+        _selectedGenre.value = genre
+        lastQuery = "" // Reset manual search so category browsing takes over
+        loadGenreMovies(genre)
+    }
+
+    /** Loads movies for the selected category without requiring a manual search */
+    private fun loadGenreMovies(genre: String) {
+        _uiState.value = DiscoverUiState.Loading
+        viewModelScope.launch {
+            val keywords = genreKeywords[genre] ?: listOf("Avengers")
+            val summaries = mutableListOf<MovieSummary>()
+
+            for (kw in keywords) {
+                repository.searchMovies(kw).onSuccess { list ->
+                    summaries.addAll(list)
+                }
+            }
+
+            if (summaries.isEmpty()) {
+                _uiState.value = DiscoverUiState.Empty("No movies found for $genre.")
+                return@launch
+            }
+
+            val topSummaries = summaries.distinctBy { it.imdbId }.take(10)
+            val details = repository.getMovieDetailsBatch(topSummaries)
+            details.forEach { knownDetails[it.imdbId] = it }
+            currentMovieIds = details.map { it.imdbId }
+            render()
+        }
+    }
+
+    /** Optional: if the user does choose to type a title in the search bar */
     fun searchMovies(query: String) {
         val trimmed = query.trim()
         lastQuery = trimmed
 
         if (trimmed.isEmpty()) {
-            currentSearchIds = emptyList()
-            _uiState.value = DiscoverUiState.Idle
+            // If the user clears the search bar, revert to the active category
+            loadGenreMovies(_selectedGenre.value)
             return
         }
 
@@ -125,19 +170,14 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
                 .onSuccess { summaries ->
                     val details = repository.getMovieDetailsBatch(summaries)
                     details.forEach { knownDetails[it.imdbId] = it }
-                    currentSearchIds = details.map { it.imdbId }
+                    currentMovieIds = details.map { it.imdbId }
                     render()
                 }
                 .onFailure { error ->
-                    currentSearchIds = emptyList()
+                    currentMovieIds = emptyList()
                     _uiState.value = DiscoverUiState.Error(error.message ?: "Something went wrong. Please try again.")
                 }
         }
-    }
-
-    fun selectGenre(genre: String) {
-        _selectedGenre.value = genre
-        if (lastQuery.isNotEmpty()) render()
     }
 
     fun toggleFavorite(imdbId: String) {
@@ -175,17 +215,21 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
 
     private fun render() {
         val genre = _selectedGenre.value
-        val details = currentSearchIds.mapNotNull { knownDetails[it] }
-        val filtered = if (genre == "All") details else details.filter {
-            it.genre?.contains(genre, ignoreCase = true) == true
+        val details = currentMovieIds.mapNotNull { knownDetails[it] }
+
+        val filtered = if (genre == "All" || lastQuery.isNotEmpty()) {
+            details
+        } else {
+            val matching = details.filter { it.genre?.contains(genre, ignoreCase = true) == true }
+            matching.ifEmpty { details }
         }
 
-        _uiState.value = when {
-            lastQuery.isEmpty() -> DiscoverUiState.Idle
-            filtered.isEmpty() -> DiscoverUiState.Empty(
-                if (genre == "All") "No movies found for \"$lastQuery\"." else "No $genre movies found for \"$lastQuery\"."
+        _uiState.value = if (filtered.isEmpty()) {
+            DiscoverUiState.Empty(
+                if (lastQuery.isNotEmpty()) "No results found for \"$lastQuery\"." else "No $genre movies found."
             )
-            else -> DiscoverUiState.Success(
+        } else {
+            DiscoverUiState.Success(
                 filtered.map {
                     it.toCardUiModel(
                         isFavorite = favoriteIds.contains(it.imdbId),

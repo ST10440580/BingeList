@@ -132,7 +132,7 @@
             android:indeterminateTint="@color/binge_red"
             android:visibility="gone" />
 
-        <!-- Switch to Login -->
+        <!-- Switch to Log in -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

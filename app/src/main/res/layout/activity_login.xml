@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/binge_surface"
+    android:background="#1A1D1A"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="24dp">
 
-    <!-- Round App Logo -->
+    <!-- Round Logo -->
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/ivLoginLogo"
         android:layout_width="96dp"
@@ -16,86 +16,89 @@
         android:layout_marginBottom="16dp"
         android:scaleType="centerCrop"
         android:src="@drawable/app_logo"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.MaterialComponents.SmallComponent"
-        app:cornerSize="50%" />
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
+    <!-- Title -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Welcome Back"
-        android:textColor="@color/binge_text_primary"
+        android:textColor="#FFFFFF"
         android:textSize="24sp"
         android:textStyle="bold" />
 
+    <!-- Subtitle -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="28dp"
         android:text="Sign in to access your watchlist"
-        android:textColor="@color/binge_text_secondary"
+        android:textColor="#9EA79F"
         android:textSize="14sp" />
 
     <!-- Email Field -->
     <EditText
         android:id="@+id/etLoginEmail"
         android:layout_width="match_parent"
-        android:layout_height="54dp"
+        android:layout_height="52dp"
         android:background="@drawable/search_bar_background"
         android:hint="Email address"
         android:inputType="textEmailAddress"
         android:paddingHorizontal="16dp"
-        android:textColor="@color/binge_text_primary"
-        android:textColorHint="@color/binge_text_secondary"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#9EA79F"
         android:textSize="15sp" />
 
     <!-- Password Field -->
     <EditText
         android:id="@+id/etLoginPassword"
         android:layout_width="match_parent"
-        android:layout_height="54dp"
+        android:layout_height="52dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/search_bar_background"
         android:hint="Password"
         android:inputType="textPassword"
         android:paddingHorizontal="16dp"
-        android:textColor="@color/binge_text_primary"
-        android:textColorHint="@color/binge_text_secondary"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#9EA79F"
         android:textSize="15sp" />
 
-    <!-- Binge Red Rounded Button -->
+    <!-- Button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
-        android:layout_height="54dp"
+        android:layout_height="52dp"
         android:layout_marginTop="24dp"
         android:text="Log In"
         android:textAllCaps="false"
-        android:textColor="@color/binge_text_primary"
+        android:textColor="#FFFFFF"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:backgroundTint="@color/binge_red"
-        app:cornerRadius="27dp" />
+        app:backgroundTint="#E50914"
+        app:cornerRadius="26dp" />
 
+    <!-- Progress Bar -->
     <ProgressBar
         android:id="@+id/loginProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:indeterminateTint="@color/binge_red"
+        android:indeterminateTint="#E50914"
         android:visibility="gone" />
 
+    <!-- Link to Register -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Don't have an account? "
-            android:textColor="@color/binge_text_secondary"
+            android:textColor="#9EA79F"
             android:textSize="14sp" />
 
         <TextView
@@ -103,7 +106,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sign Up"
-            android:textColor="@color/binge_red"
+            android:textColor="#E50914"
             android:textSize="14sp"
             android:textStyle="bold" />
     </LinearLayout>

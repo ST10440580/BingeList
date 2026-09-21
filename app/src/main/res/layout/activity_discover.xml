@@ -71,6 +71,16 @@
                         android:textSize="14sp" />
 
                 </LinearLayout>
+                <!-- Profile Button -->
+                <ImageView
+                    android:id="@+id/btnProfile"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:background="@drawable/rating_badge_background"
+                    android:padding="9dp"
+                    android:src="@drawable/ic_profile"
+                    android:contentDescription="Profile &amp; Account"
+                    app:tint="@color/white"/>
 
             </LinearLayout>
 
