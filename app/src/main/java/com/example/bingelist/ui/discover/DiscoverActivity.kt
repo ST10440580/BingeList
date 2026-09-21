@@ -16,6 +16,7 @@ import com.example.bingelist.ui.details.MovieDetailsActivity
 import com.example.bingelist.ui.favorites.FavoritesActivity
 import com.example.bingelist.ui.settings.SettingsActivity
 import com.example.bingelist.ui.watchlist.WatchlistActivity
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 class DiscoverActivity : AppCompatActivity() {
@@ -31,9 +32,23 @@ class DiscoverActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDiscoverBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // Set up profile button to open ProfileActivity
         binding.btnProfile.setOnClickListener {
-            startActivity(Intent(this, com.example.bingelist.ui.account.ProfileActivity::class.java))
+            androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Sign Out")
+                .setMessage("Are you sure you want to sign out?")
+                .setPositiveButton("Sign Out") { _, _ ->
+                    FirebaseAuth.getInstance().signOut()
+                    val intent = Intent(this, com.example.bingelist.ui.account.LoginActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
+                    startActivity(intent)
+                    finish()
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
         }
+
 
         setupNewThisWeek()
         setupGenreChips()
