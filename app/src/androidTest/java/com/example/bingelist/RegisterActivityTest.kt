@@ -28,8 +28,8 @@ class RegisterActivityTest {
     fun verifyRegisterViews_areDisplayed() {
         ActivityScenario.launch(RegisterActivity::class.java)
 
-        onView(withId(R.id.etEmail)).check(matches(isDisplayed()))
-        onView(withId(R.id.etPassword)).check(matches(isDisplayed()))
+        onView(withId(R.id.etRegisterEmail)).check(matches(isDisplayed()))
+        onView(withId(R.id.etRegisterPassword)).check(matches(isDisplayed()))
         onView(withId(R.id.btnRegister)).check(matches(isDisplayed()))
         onView(withId(R.id.tvGoToLogin)).check(matches(isDisplayed()))
     }
@@ -41,14 +41,14 @@ class RegisterActivityTest {
         val studentTestEmail = "st10441936@bingelist.ac.za"
         val studentSecurePass = "SibongilePass2026"
 
-        onView(withId(R.id.etEmail))
+        onView(withId(R.id.etRegisterEmail))
             .perform(replaceText(studentTestEmail), closeSoftKeyboard())
-        onView(withId(R.id.etEmail))
+        onView(withId(R.id.etRegisterEmail))
             .check(matches(withText(studentTestEmail)))
 
-        onView(withId(R.id.etPassword))
+        onView(withId(R.id.etRegisterPassword))
             .perform(replaceText(studentSecurePass), closeSoftKeyboard())
-        onView(withId(R.id.etPassword))
+        onView(withId(R.id.etRegisterPassword))
             .check(matches(withText(studentSecurePass)))
     }
 
