@@ -114,17 +114,21 @@ class DiscoverActivity : AppCompatActivity() {
     }
 
     private fun setupBottomNav() {
-        // 1. Open Watchlist Activity
+
+        binding.navDiscover.setOnClickListener {
+            startActivity(Intent(this, DiscoverActivity::class.java))
+        }
+
         binding.navWatchList.setOnClickListener {
             startActivity(Intent(this, WatchlistActivity::class.java))
         }
 
-        // 2. Open Favorites Activity
+
         binding.navFavorites.setOnClickListener {
             startActivity(Intent(this, FavoritesActivity::class.java))
         }
 
-        // 3. Open Settings Activity
+
         binding.navSettings.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }

@@ -16,6 +16,8 @@ import com.example.bingelist.ui.account.LoginActivity
 import com.example.bingelist.ui.details.MovieDetailsActivity
 import com.example.bingelist.ui.discover.DiscoverActivity
 import com.example.bingelist.ui.discover.MovieCardAdapter
+import com.example.bingelist.ui.favorites.FavoritesActivity
+import com.example.bingelist.ui.settings.SettingsActivity
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
@@ -51,25 +53,23 @@ class WatchlistActivity : AppCompatActivity() {
     }
 
     private fun setupBottomNav() {
+
         binding.navDiscover.setOnClickListener {
-            val intent = Intent(this, DiscoverActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-            startActivity(intent)
-            finish()
+            startActivity(Intent(this, DiscoverActivity::class.java))
         }
 
-        // Watchlist is already the active screen
         binding.navWatchList.setOnClickListener {
-            binding.watchlistRecyclerView.smoothScrollToPosition(0)
+            startActivity(Intent(this, WatchlistActivity::class.java))
         }
+
 
         binding.navFavorites.setOnClickListener {
-            Toast.makeText(this, "Favorites screen coming soon", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, FavoritesActivity::class.java))
         }
 
-        // Settings / Log Out Dialog
+
         binding.navSettings.setOnClickListener {
-            showLogoutDialog()
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
     }
 

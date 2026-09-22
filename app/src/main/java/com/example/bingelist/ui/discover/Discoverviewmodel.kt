@@ -31,6 +31,15 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
     private val repository = MovieRepository()
     private val dbHelper = BingeListDatabaseHelper(application)
     private val cloudSync = FavoritesCloudSync()
+
+    //populating the new this week section because we havent received the TMD
+    private val NEW_THIS_WEEK_IDS = listOf(
+        "tt33764258",
+        "tt22084616",
+        "tt15239678",
+        "tt13238346"
+
+    )
     private val auth = FirebaseAuth.getInstance()
 
     private val currentUserId: String?
@@ -101,8 +110,8 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
     private fun loadNewThisWeek() {
         viewModelScope.launch {
             val ids = repository.getWeeklyNewReleaseIds(limit = 4)
-            newThisWeekIds = ids
-            val details = repository.getMovieDetailsByIds(ids)
+            newThisWeekIds = NEW_THIS_WEEK_IDS
+            val details = repository.getMovieDetailsByIds(NEW_THIS_WEEK_IDS)
             details.forEach { knownDetails[it.imdbId] = it }
             applyFlagsToNewThisWeek()
         }
@@ -120,14 +129,14 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    /** Called when the user taps any genre button (Action, Drama, Comedy, etc.) */
+    // Called when the user taps any genre button (Action, Drama, Comedy, etc.) */
     fun selectGenre(genre: String) {
         _selectedGenre.value = genre
         lastQuery = "" // Reset manual search so category browsing takes over
         loadGenreMovies(genre)
     }
 
-    /** Loads movies for the selected category without requiring a manual search */
+    // Loads movies for the selected category without requiring a manual search */
     private fun loadGenreMovies(genre: String) {
         _uiState.value = DiscoverUiState.Loading
         viewModelScope.launch {
@@ -153,7 +162,6 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    /** Optional: if the user does choose to type a title in the search bar */
     fun searchMovies(query: String) {
         val trimmed = query.trim()
         lastQuery = trimmed

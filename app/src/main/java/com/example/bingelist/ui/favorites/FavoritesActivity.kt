@@ -1,5 +1,6 @@
 package com.example.bingelist.ui.favorites
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -12,7 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bingelist.data.model.MovieCardUiModel
 import com.example.bingelist.databinding.ActivityFavoritesBinding
 import com.example.bingelist.ui.details.MovieDetailsActivity
+import com.example.bingelist.ui.discover.DiscoverActivity
 import com.example.bingelist.ui.discover.MovieCardAdapter
+import com.example.bingelist.ui.settings.SettingsActivity
+import com.example.bingelist.ui.watchlist.WatchlistActivity
 import kotlinx.coroutines.launch
 
 class FavoritesActivity : AppCompatActivity() {
@@ -35,6 +39,7 @@ class FavoritesActivity : AppCompatActivity() {
         binding.favoritesRecyclerView.adapter = adapter
 
         observeFavorites()
+        setupBottomNav()
     }
 
     private fun observeFavorites() {
@@ -50,6 +55,28 @@ class FavoritesActivity : AppCompatActivity() {
         binding.favoritesRecyclerView.visibility = if (isEmpty) View.GONE else View.VISIBLE
         binding.emptyState.visibility = if (isEmpty) View.VISIBLE else View.GONE
         adapter.submitList(movies)
+    }
+
+
+    private fun setupBottomNav() {
+
+        binding.navDiscover.setOnClickListener {
+            startActivity(Intent(this, DiscoverActivity::class.java))
+        }
+
+        binding.navWatchList.setOnClickListener {
+            startActivity(Intent(this, WatchlistActivity::class.java))
+        }
+
+
+        binding.navFavorites.setOnClickListener {
+            startActivity(Intent(this, FavoritesActivity::class.java))
+        }
+
+
+        binding.navSettings.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
     }
 
     override fun onResume() {
