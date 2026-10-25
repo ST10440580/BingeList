@@ -5,8 +5,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bingelist.data.database.BingeListDatabaseHelper
 import com.example.bingelist.data.model.MovieDetail
-import com.example.bingelist.data.remote.FavoritesCloudSync
+import com.example.bingelist.data.remote.LibraryList
 import com.example.bingelist.data.repository.MovieRepository
+import com.example.bingelist.data.sync.LibrarySync
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +26,7 @@ class MovieDetailsViewModel(application: Application) : AndroidViewModel(applica
 
     private val repository = MovieRepository()
     private val dbHelper = BingeListDatabaseHelper(application)
-    private val cloudSync = FavoritesCloudSync()
+    private val sync = LibrarySync(dbHelper)
     private val auth = FirebaseAuth.getInstance()
 
     private val currentUserId: String?
@@ -45,7 +46,9 @@ class MovieDetailsViewModel(application: Application) : AndroidViewModel(applica
                     withContext(Dispatchers.IO) { dbHelper.cacheMovie(movie) }
                     emitCurrentState(movie)
                 }
-                .onFailure { e -> _uiState.value = DetailsUiState.Error(e.message ?: "Couldn't load this movie.") }
+                .onFailure { e ->
+                    _uiState.value = DetailsUiState.Error(e.message ?: "Couldn't load this movie.")
+                }
         }
     }
 
@@ -66,7 +69,7 @@ class MovieDetailsViewModel(application: Application) : AndroidViewModel(applica
                 !wasFavorite
             }
             emitCurrentState(movie)
-            runCatching { cloudSync.pushFavorite(uid, movie.imdbId, nowFavorite) }
+            sync.push(uid, LibraryList.FAVORITES, movie.imdbId, nowFavorite)
         }
     }
 

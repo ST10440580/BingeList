@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.bingelist.notifications.NotificationHelper
+import com.example.bingelist.notifications.NotificationScheduler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,6 +37,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     fun toggleNotifications(enabled: Boolean) {
         prefs.edit().putBoolean("notifications", enabled).apply()
+        NotificationHelper.applyTopicSubscription(enabled)
+        if (enabled) NotificationScheduler.runNow(getApplication<Application>())
         _uiState.value = _uiState.value.copy(notificationsEnabled = enabled)
     }
 }

@@ -6,14 +6,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.bingelist.data.database.BingeListDatabaseHelper
 import com.example.bingelist.data.model.MovieCardUiModel
 import com.example.bingelist.data.model.toCardUiModel
+import com.example.bingelist.data.remote.LibraryList
 import com.example.bingelist.data.repository.MovieRepository
+import com.example.bingelist.data.sync.LibrarySync
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 sealed class WatchlistUiState {
     object Loading : WatchlistUiState()
@@ -28,7 +29,11 @@ class WatchlistViewModel(
 
     private val repository = MovieRepository()
     private val database = BingeListDatabaseHelper(application)
+    private val sync = LibrarySync(database)
     private val auth = FirebaseAuth.getInstance()
+
+    private val currentUserId: String?
+        get() = auth.currentUser?.uid
 
     private val _uiState =
         MutableStateFlow<WatchlistUiState>(WatchlistUiState.Loading)
@@ -36,16 +41,34 @@ class WatchlistViewModel(
     val uiState: StateFlow<WatchlistUiState> =
         _uiState.asStateFlow()
 
+    init {
+        // Show the local list straight away (the Activity calls loadWatchlist), then
+        // merge with Firestore in the background and reload.
+        val uid = currentUserId
+        if (uid != null) {
+            viewModelScope.launch {
+                sync.hydrateOnce(uid)
+                loadWatchlist()
+            }
+        }
+    }
+
     fun loadWatchlist() {
 
         viewModelScope.launch(Dispatchers.IO) {
+
+            val userId = currentUserId
+            if (userId == null) {
+                _uiState.value = WatchlistUiState.Empty
+                return@launch
+            }
 
             _uiState.value = WatchlistUiState.Loading
 
             try {
 
-                // Get movie IDs saved in the SQLite watchlist table
-                val ids = database.getWatchlistIds()
+                // Get movie IDs saved in this user's SQLite watchlist
+                val ids = database.getWatchlistIds(userId)
 
                 if (ids.isEmpty()) {
                     _uiState.value = WatchlistUiState.Empty
@@ -93,14 +116,7 @@ class WatchlistViewModel(
                 }
 
                 // Get the user's favourites from SQLite
-                val userId = auth.currentUser?.uid
-
-                val favoriteIds =
-                    if (userId != null) {
-                        database.getFavoriteIds(userId).toSet()
-                    } else {
-                        emptySet()
-                    }
+                val favoriteIds = database.getFavoriteIds(userId).toSet()
 
                 _uiState.value =
                     WatchlistUiState.Success(
@@ -124,30 +140,34 @@ class WatchlistViewModel(
 
     fun toggleFavorite(imdbId: String) {
 
-        val userId = auth.currentUser?.uid ?: return
+        val userId = currentUserId ?: return
 
         viewModelScope.launch(Dispatchers.IO) {
 
-            val isFavorite =
+            val wasFavorite =
                 database.isFavorite(userId, imdbId)
 
-            if (isFavorite) {
+            if (wasFavorite) {
                 database.removeFromFavorites(userId, imdbId)
             } else {
                 database.addToFavorites(userId, imdbId)
             }
 
             loadWatchlist()
+            sync.push(userId, LibraryList.FAVORITES, imdbId, !wasFavorite)
         }
     }
 
     fun removeFromWatchlist(imdbId: String) {
 
+        val userId = currentUserId ?: return
+
         viewModelScope.launch(Dispatchers.IO) {
 
-            database.removeFromWatchlist(imdbId)
+            database.removeFromWatchlist(userId, imdbId)
 
             loadWatchlist()
+            sync.push(userId, LibraryList.WATCHLIST, imdbId, false)
         }
     }
 }

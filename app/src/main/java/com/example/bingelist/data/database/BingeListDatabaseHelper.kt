@@ -9,14 +9,16 @@ import com.example.bingelist.data.model.MovieDetail
 class BingeListDatabaseHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
-    override fun onCreate(db: SQLiteDatabase) {
-        val createWatchlistTable = """
-            CREATE TABLE $TABLE_WATCHLIST (
-                $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                $COLUMN_IMDB_ID TEXT UNIQUE NOT NULL
-            )
-        """.trimIndent()
+    private fun createWatchlistSql() = """
+        CREATE TABLE $TABLE_WATCHLIST (
+            $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            $COLUMN_USER_ID TEXT NOT NULL,
+            $COLUMN_IMDB_ID TEXT NOT NULL,
+            UNIQUE($COLUMN_USER_ID, $COLUMN_IMDB_ID)
+        )
+    """.trimIndent()
 
+    override fun onCreate(db: SQLiteDatabase) {
         val createFavoritesTable = """
             CREATE TABLE $TABLE_FAVORITES (
                 $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,53 +44,65 @@ class BingeListDatabaseHelper(context: Context) :
             )
         """.trimIndent()
 
-        db.execSQL(createWatchlistTable)
+        db.execSQL(createWatchlistSql())
         db.execSQL(createFavoritesTable)
         db.execSQL(createMovieCacheTable)
     }
 
-    override fun onUpgrade(
-        db: SQLiteDatabase,
-        oldVersion: Int,
-        newVersion: Int
-    ) {
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_WATCHLIST")
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_FAVORITES")
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_MOVIE_CACHE")
-        onCreate(db)
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        if (oldVersion < 3) {
+            db.execSQL("DROP TABLE IF EXISTS $TABLE_WATCHLIST")
+            db.execSQL("DROP TABLE IF EXISTS $TABLE_FAVORITES")
+            db.execSQL("DROP TABLE IF EXISTS $TABLE_MOVIE_CACHE")
+            onCreate(db)
+            return
+        }
+        if (oldVersion < 4) {
+            // v3 -> v4: the watchlist becomes per-user. Existing rows are kept under a
+            // placeholder owner; the first signed-in user adopts them (adoptLegacyWatchlist).
+            db.execSQL("ALTER TABLE $TABLE_WATCHLIST RENAME TO watchlist_old")
+            db.execSQL(createWatchlistSql())
+            db.execSQL(
+                "INSERT OR IGNORE INTO $TABLE_WATCHLIST ($COLUMN_USER_ID, $COLUMN_IMDB_ID) " +
+                        "SELECT '$LEGACY_USER', $COLUMN_IMDB_ID FROM watchlist_old"
+            )
+            db.execSQL("DROP TABLE watchlist_old")
+        }
     }
 
-    // --- Watchlist ---
+    // --- Watchlist (per user) ---
 
-    fun addToWatchlist(imdbId: String): Boolean {
-        val db = writableDatabase
-        val values = ContentValues().apply { put(COLUMN_IMDB_ID, imdbId) }
-        val result = db.insert(TABLE_WATCHLIST, null, values)
-        return result != -1L
+    fun addToWatchlist(userId: String, imdbId: String): Boolean {
+        val values = ContentValues().apply {
+            put(COLUMN_USER_ID, userId)
+            put(COLUMN_IMDB_ID, imdbId)
+        }
+        return writableDatabase.insert(TABLE_WATCHLIST, null, values) != -1L
     }
 
-    fun removeFromWatchlist(imdbId: String): Boolean {
-        val db = writableDatabase
-        val result = db.delete(TABLE_WATCHLIST, "$COLUMN_IMDB_ID = ?", arrayOf(imdbId))
+    fun removeFromWatchlist(userId: String, imdbId: String): Boolean {
+        val result = writableDatabase.delete(
+            TABLE_WATCHLIST, "$COLUMN_USER_ID = ? AND $COLUMN_IMDB_ID = ?", arrayOf(userId, imdbId)
+        )
         return result > 0
     }
 
-    fun isInWatchlist(imdbId: String): Boolean {
-        val db = readableDatabase
-        val cursor = db.query(
-            TABLE_WATCHLIST, arrayOf(COLUMN_IMDB_ID), "$COLUMN_IMDB_ID = ?",
-            arrayOf(imdbId), null, null, null
+    fun isInWatchlist(userId: String, imdbId: String): Boolean {
+        val cursor = readableDatabase.query(
+            TABLE_WATCHLIST, arrayOf(COLUMN_IMDB_ID),
+            "$COLUMN_USER_ID = ? AND $COLUMN_IMDB_ID = ?", arrayOf(userId, imdbId),
+            null, null, null
         )
         val exists = cursor.moveToFirst()
         cursor.close()
         return exists
     }
 
-    fun getWatchlistIds(): List<String> {
+    fun getWatchlistIds(userId: String): List<String> {
         val ids = mutableListOf<String>()
-        val db = readableDatabase
-        val cursor = db.query(
-            TABLE_WATCHLIST, arrayOf(COLUMN_IMDB_ID), null, null, null, null, "$COLUMN_ID ASC"
+        val cursor = readableDatabase.query(
+            TABLE_WATCHLIST, arrayOf(COLUMN_IMDB_ID),
+            "$COLUMN_USER_ID = ?", arrayOf(userId), null, null, "$COLUMN_ID ASC"
         )
         while (cursor.moveToNext()) {
             ids.add(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_IMDB_ID)))
@@ -97,34 +111,38 @@ class BingeListDatabaseHelper(context: Context) :
         return ids
     }
 
+    /** Gives watchlist rows saved before the per-user change to the signed-in user. */
+    fun adoptLegacyWatchlist(userId: String) {
+        val db = writableDatabase
+        db.execSQL(
+            "UPDATE OR IGNORE $TABLE_WATCHLIST SET $COLUMN_USER_ID = ? WHERE $COLUMN_USER_ID = ?",
+            arrayOf(userId, LEGACY_USER)
+        )
+        db.delete(TABLE_WATCHLIST, "$COLUMN_USER_ID = ?", arrayOf(LEGACY_USER))
+    }
+
     // --- Favorites ---
 
     fun addToFavorites(userId: String, imdbId: String): Boolean {
-        val db = writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_USER_ID, userId)
             put(COLUMN_IMDB_ID, imdbId)
         }
-        val result = db.insert(TABLE_FAVORITES, null, values)
-        return result != -1L
+        return writableDatabase.insert(TABLE_FAVORITES, null, values) != -1L
     }
 
     fun removeFromFavorites(userId: String, imdbId: String): Boolean {
-        val db = writableDatabase
-        val result = db.delete(
-            TABLE_FAVORITES,
-            "$COLUMN_USER_ID = ? AND $COLUMN_IMDB_ID = ?",
-            arrayOf(userId, imdbId)
+        val result = writableDatabase.delete(
+            TABLE_FAVORITES, "$COLUMN_USER_ID = ? AND $COLUMN_IMDB_ID = ?", arrayOf(userId, imdbId)
         )
         return result > 0
     }
 
     fun isFavorite(userId: String, imdbId: String): Boolean {
-        val db = readableDatabase
-        val cursor = db.query(
+        val cursor = readableDatabase.query(
             TABLE_FAVORITES, arrayOf(COLUMN_IMDB_ID),
-            "$COLUMN_USER_ID = ? AND $COLUMN_IMDB_ID = ?",
-            arrayOf(userId, imdbId), null, null, null
+            "$COLUMN_USER_ID = ? AND $COLUMN_IMDB_ID = ?", arrayOf(userId, imdbId),
+            null, null, null
         )
         val exists = cursor.moveToFirst()
         cursor.close()
@@ -133,11 +151,9 @@ class BingeListDatabaseHelper(context: Context) :
 
     fun getFavoriteIds(userId: String): List<String> {
         val ids = mutableListOf<String>()
-        val db = readableDatabase
-        val cursor = db.query(
+        val cursor = readableDatabase.query(
             TABLE_FAVORITES, arrayOf(COLUMN_IMDB_ID),
-            "$COLUMN_USER_ID = ?", arrayOf(userId),
-            null, null, "$COLUMN_ID ASC"
+            "$COLUMN_USER_ID = ?", arrayOf(userId), null, null, "$COLUMN_ID ASC"
         )
         while (cursor.moveToNext()) {
             ids.add(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_IMDB_ID)))
@@ -149,7 +165,6 @@ class BingeListDatabaseHelper(context: Context) :
     // --- Movie Detail Cache ---
 
     fun cacheMovie(movie: MovieDetail) {
-        val db = writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_CACHE_IMDB_ID, movie.imdbId)
             put(COLUMN_TITLE, movie.title)
@@ -163,12 +178,13 @@ class BingeListDatabaseHelper(context: Context) :
             put(COLUMN_ACTORS, movie.actors ?: "")
             put(COLUMN_CACHED_AT, System.currentTimeMillis())
         }
-        db.insertWithOnConflict(TABLE_MOVIE_CACHE, null, values, SQLiteDatabase.CONFLICT_REPLACE)
+        writableDatabase.insertWithOnConflict(
+            TABLE_MOVIE_CACHE, null, values, SQLiteDatabase.CONFLICT_REPLACE
+        )
     }
 
     fun getCachedMovie(imdbId: String): MovieDetail? {
-        val db = readableDatabase
-        val cursor = db.query(
+        val cursor = readableDatabase.query(
             TABLE_MOVIE_CACHE, null, "$COLUMN_CACHE_IMDB_ID = ?", arrayOf(imdbId), null, null, null
         )
         val movie = if (cursor.moveToFirst()) cursor.toMovieDetail() else null
@@ -179,8 +195,7 @@ class BingeListDatabaseHelper(context: Context) :
     fun getCachedMovies(imdbIds: List<String>): List<MovieDetail> {
         if (imdbIds.isEmpty()) return emptyList()
         val placeholders = imdbIds.joinToString(",") { "?" }
-        val db = readableDatabase
-        val cursor = db.query(
+        val cursor = readableDatabase.query(
             TABLE_MOVIE_CACHE, null, "$COLUMN_CACHE_IMDB_ID IN ($placeholders)",
             imdbIds.toTypedArray(), null, null, null
         )
@@ -212,7 +227,9 @@ class BingeListDatabaseHelper(context: Context) :
 
     companion object {
         private const val DATABASE_NAME = "bingelist.db"
-        private const val DATABASE_VERSION = 3
+        private const val DATABASE_VERSION = 4 // 4: watchlist is now per user
+
+        private const val LEGACY_USER = "__legacy__"
 
         private const val TABLE_WATCHLIST = "watchlist"
         private const val TABLE_FAVORITES = "favorites"

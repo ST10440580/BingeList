@@ -1,19 +1,26 @@
 package com.example.bingelist.ui.account
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.bingelist.R
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
-// ProfileActivity.kt to update user profile and password
+import kotlinx.coroutines.launch
+
+// ProfileActivity.kt: name/password come from Firebase Auth, the photo is stored on the phone
 class ProfileActivity : AppCompatActivity() {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -25,12 +32,20 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var btnLogout: MaterialButton
     private lateinit var btnBack: TextView
     private lateinit var progressBar: ProgressBar
+    private lateinit var ivAvatar: ImageView
+    private lateinit var btnChangePhoto: TextView
+    private lateinit var btnRemovePhoto: TextView
+
+    // System photo picker: needs no storage permission
+    private val pickPhoto =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) savePhoto(uri)
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
-        // Bind Views
         etDisplayName = findViewById(R.id.etDisplayName)
         etEmail = findViewById(R.id.etEmail)
         etNewPassword = findViewById(R.id.etNewPassword)
@@ -38,8 +53,12 @@ class ProfileActivity : AppCompatActivity() {
         btnLogout = findViewById(R.id.btnLogout)
         btnBack = findViewById(R.id.btnBack)
         progressBar = findViewById(R.id.progressBar)
+        ivAvatar = findViewById(R.id.ivAvatar)
+        btnChangePhoto = findViewById(R.id.btnChangePhoto)
+        btnRemovePhoto = findViewById(R.id.btnRemovePhoto)
 
         loadUserData()
+        refreshAvatar()
         setupListeners()
     }
 
@@ -49,23 +68,47 @@ class ProfileActivity : AppCompatActivity() {
             goToLogin()
             return
         }
-
         etEmail.setText(user.email ?: "")
         etDisplayName.setText(user.displayName ?: "")
     }
 
     private fun setupListeners() {
-        btnBack.setOnClickListener {
-            finish()
-        }
+        btnBack.setOnClickListener { finish() }
+        btnSaveProfile.setOnClickListener { saveChanges() }
+        btnLogout.setOnClickListener { showLogoutDialog() }
 
-        btnSaveProfile.setOnClickListener {
-            saveChanges()
+        ivAvatar.setOnClickListener { openPicker() }
+        btnChangePhoto.setOnClickListener { openPicker() }
+        btnRemovePhoto.setOnClickListener {
+            val uid = auth.currentUser?.uid ?: return@setOnClickListener
+            ProfilePhotoStore.remove(this, uid)
+            refreshAvatar()
         }
+    }
 
-        btnLogout.setOnClickListener {
-            showLogoutDialog()
+    private fun openPicker() {
+        pickPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    }
+
+    private fun savePhoto(uri: Uri) {
+        val uid = auth.currentUser?.uid ?: return
+        progressBar.visibility = View.VISIBLE
+        lifecycleScope.launch {
+            val saved = ProfilePhotoStore.save(this@ProfileActivity, uid, uri)
+            progressBar.visibility = View.GONE
+            if (saved) {
+                refreshAvatar()
+            } else {
+                Toast.makeText(this@ProfileActivity, "Couldn't use that photo. Try another.", Toast.LENGTH_SHORT).show()
+            }
         }
+    }
+
+    private fun refreshAvatar() {
+        val uid = auth.currentUser?.uid
+        ProfilePhotoStore.bind(ivAvatar, uid, 22)
+        btnRemovePhoto.visibility =
+            if (uid != null && ProfilePhotoStore.exists(this, uid)) View.VISIBLE else View.GONE
     }
 
     private fun saveChanges() {

@@ -1,17 +1,25 @@
 package com.example.bingelist.ui.discover
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bingelist.data.model.MovieCardUiModel
 import com.example.bingelist.databinding.ActivityDiscoverBinding
+import com.example.bingelist.notifications.NotificationHelper
+import com.example.bingelist.ui.account.ProfileActivity
+import com.example.bingelist.ui.account.ProfilePhotoStore
 import com.example.bingelist.ui.details.MovieDetailsActivity
 import com.example.bingelist.ui.favorites.FavoritesActivity
 import com.example.bingelist.ui.settings.SettingsActivity
@@ -28,27 +36,18 @@ class DiscoverActivity : AppCompatActivity() {
     private lateinit var resultsAdapter: MovieCardAdapter
     private lateinit var genreAdapter: GenreAdapter
 
+    private val notificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDiscoverBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        // Set up profile button to open ProfileActivity
-        binding.btnProfile.setOnClickListener {
-            androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle("Sign Out")
-                .setMessage("Are you sure you want to sign out?")
-                .setPositiveButton("Sign Out") { _, _ ->
-                    FirebaseAuth.getInstance().signOut()
-                    val intent = Intent(this, com.example.bingelist.ui.account.LoginActivity::class.java).apply {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    }
-                    startActivity(intent)
-                    finish()
-                }
-                .setNegativeButton("Cancel", null)
-                .show()
-        }
 
+        // Profile button opens the Profile screen (the LogOut button lives there)
+        binding.btnProfile.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+        }
 
         setupNewThisWeek()
         setupGenreChips()
@@ -56,6 +55,12 @@ class DiscoverActivity : AppCompatActivity() {
         setupSearchView()
         setupBottomNav()
         observeViewModel()
+
+        askForNotificationPermission()
+        NotificationHelper.saveCurrentToken()
+        openMovieFromIntent(intent)
+
+
     }
 
     override fun onResume() {
@@ -63,6 +68,31 @@ class DiscoverActivity : AppCompatActivity() {
         // Refresh watchlist and favorites status icons when returning to Discover
         viewModel.refreshWatchlist()
         viewModel.refreshFavorites()
+        // Show the user's profile photo on the header button (default icon if none)
+        ProfilePhotoStore.bind(binding.btnProfile, FirebaseAuth.getInstance().currentUser?.uid, 9)
+    }
+
+    // Called when a notification is tapped while Discover is already open
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        openMovieFromIntent(intent)
+    }
+
+    // A tapped notification carries the movie's IMDb id; open that movie's details
+    private fun openMovieFromIntent(intent: Intent?) {
+        val imdbId = intent?.getStringExtra(NotificationHelper.EXTRA_IMDB_ID) ?: return
+        intent.removeExtra(NotificationHelper.EXTRA_IMDB_ID)
+        MovieDetailsActivity.start(this, imdbId)
+    }
+
+    private fun askForNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= 33 && NotificationHelper.isEnabled(this) &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
     }
 
     private fun setupNewThisWeek() {
@@ -123,11 +153,9 @@ class DiscoverActivity : AppCompatActivity() {
             startActivity(Intent(this, WatchlistActivity::class.java))
         }
 
-
         binding.navFavorites.setOnClickListener {
             startActivity(Intent(this, FavoritesActivity::class.java))
         }
-
 
         binding.navSettings.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
@@ -179,6 +207,7 @@ class DiscoverActivity : AppCompatActivity() {
             is DiscoverUiState.Error -> {
                 binding.statusMessage.text = state.message
                 binding.statusMessage.visibility = View.VISIBLE
+
             }
         }
     }

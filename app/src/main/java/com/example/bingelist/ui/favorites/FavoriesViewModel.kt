@@ -6,7 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.bingelist.data.database.BingeListDatabaseHelper
 import com.example.bingelist.data.model.MovieCardUiModel
 import com.example.bingelist.data.model.toCardUiModel
-import com.example.bingelist.data.remote.FavoritesCloudSync
+import com.example.bingelist.data.remote.LibraryList
+import com.example.bingelist.data.sync.LibrarySync
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +19,7 @@ import kotlinx.coroutines.withContext
 class FavoritesViewModel(application: Application) : AndroidViewModel(application) {
 
     private val dbHelper = BingeListDatabaseHelper(application)
-    private val cloudSync = FavoritesCloudSync()
+    private val sync = LibrarySync(dbHelper)
     private val auth = FirebaseAuth.getInstance()
 
     private val currentUserId: String?
@@ -28,10 +29,9 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
     val favorites: StateFlow<List<MovieCardUiModel>> = _favorites.asStateFlow()
 
     init {
-        loadFavorites()   // instant, from local SQLite works offline
-        hydrateFromCloud() // background refresh from Firestore, if online
+        loadFavorites()   // instant, from local SQLite (works offline)
+        syncFromCloud()   // then merge with Firestore and reload
     }
-
 
     fun loadFavorites() {
         val uid = currentUserId
@@ -41,7 +41,8 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
         }
         viewModelScope.launch {
             val movies = withContext(Dispatchers.IO) {
-                dbHelper.getCachedMovies(dbHelper.getFavoriteIds(uid)).map { it.toCardUiModel(isFavorite = true) }
+                dbHelper.getCachedMovies(dbHelper.getFavoriteIds(uid))
+                    .map { it.toCardUiModel(isFavorite = true) }
             }
             _favorites.value = movies
         }
@@ -57,22 +58,14 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
                 !wasFavorite
             }
             loadFavorites()
-            runCatching { cloudSync.pushFavorite(uid, imdbId, nowFavorite) }
-            // If this push fails (offline), local SQLite state is unaffected — it's
-            // just out of sync with the cloud until the next toggle or app open.
+            sync.push(uid, LibraryList.FAVORITES, imdbId, nowFavorite)
         }
     }
 
-
-    private fun hydrateFromCloud() {
+    private fun syncFromCloud() {
         val uid = currentUserId ?: return
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                val cloudIds = runCatching { cloudSync.pullFavoriteIds(uid) }.getOrDefault(emptyList())
-                cloudIds.forEach { imdbId ->
-                    if (!dbHelper.isFavorite(uid, imdbId)) dbHelper.addToFavorites(uid, imdbId)
-                }
-            }
+            sync.hydrateOnce(uid)
             loadFavorites()
         }
     }

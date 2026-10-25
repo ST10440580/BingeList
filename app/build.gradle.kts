@@ -59,7 +59,9 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
 
-
+//Real-time notification
+    implementation("com.google.firebase:firebase-messaging")
+    implementation("androidx.work:work-runtime-ktx:2.9.1")
 
     //Firebase Authentication:
     implementation(platform("com.google.firebase:firebase-bom:33.1.2"))

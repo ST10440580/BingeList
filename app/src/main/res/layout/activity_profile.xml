@@ -54,15 +54,38 @@
 
             <!-- Avatar -->
             <ImageView
-                android:layout_width="84dp"
-                android:layout_height="84dp"
+                android:id="@+id/ivAvatar"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="28dp"
-                android:layout_marginBottom="24dp"
+                android:layout_marginTop="24dp"
                 android:background="@drawable/rating_badge_background"
-                android:padding="20dp"
+                android:contentDescription="Profile photo"
+                android:padding="22dp"
                 android:src="@drawable/ic_profile"
                 app:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/btnChangePhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:padding="8dp"
+                android:text="Change photo"
+                android:textColor="@color/bl_logo_bg"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/btnRemovePhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp"
+                android:padding="4dp"
+                android:text="Remove photo"
+                android:textColor="#E50914"
+                android:textSize="13sp"
+                android:visibility="gone" />
 
             <!-- Edit Details Card -->
             <androidx.cardview.widget.CardView

@@ -4,12 +4,14 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bingelist.data.database.BingeListDatabaseHelper
+import com.example.bingelist.data.model.FeaturedMovies
 import com.example.bingelist.data.model.MovieCardUiModel
 import com.example.bingelist.data.model.MovieDetail
 import com.example.bingelist.data.model.MovieSummary
 import com.example.bingelist.data.model.toCardUiModel
-import com.example.bingelist.data.remote.FavoritesCloudSync
+import com.example.bingelist.data.remote.LibraryList
 import com.example.bingelist.data.repository.MovieRepository
+import com.example.bingelist.data.sync.LibrarySync
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,16 +32,11 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
 
     private val repository = MovieRepository()
     private val dbHelper = BingeListDatabaseHelper(application)
-    private val cloudSync = FavoritesCloudSync()
+    private val sync = LibrarySync(dbHelper)
 
-    //populating the new this week section because we havent received the TMD
-    private val NEW_THIS_WEEK_IDS = listOf(
-        "tt33764258",
-        "tt22084616",
-        "tt15239678",
-        "tt13238346"
+    //populating the new this week section because we have not received the TMD
+    private val NEW_THIS_WEEK_IDS = FeaturedMovies.NEW_THIS_WEEK_IDS
 
-    )
     private val auth = FirebaseAuth.getInstance()
 
     private val currentUserId: String?
@@ -67,7 +64,15 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
         "Action" to listOf("John Wick", "Fast"),
         "Animation" to listOf("Toy Story", "Shrek"),
         "Comedy" to listOf("Hangover", "Superbad"),
-        "Drama" to listOf("Godfather", "Shawshank")
+        "Drama" to listOf("Godfather", "Shawshank"),
+        // new genres
+        "Horror" to listOf("Scream", "Halloween", "Conjuring"),
+        "Sci-Fi" to listOf("Star Wars", "Matrix", "Alien"),
+        "Romance" to listOf("Twilight", "Notebook", "Pride and Prejudice"),
+        "Thriller" to listOf("Bourne", "Gone Girl", "Prisoners"),
+        "Fantasy" to listOf("Harry Potter", "Lord of the Rings", "Hobbit"),
+        "Crime" to listOf("Scarface", "Goodfellas", "Ocean's Eleven"),
+        "Adventure" to listOf("Indiana Jones", "Pirates of the Caribbean", "Jurassic Park")
     )
 
     init {
@@ -76,6 +81,17 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
         loadNewThisWeek()
         // Automatically load "All" category movies on launch
         loadGenreMovies(GENRES.first())
+        syncFromCloud()
+    }
+
+    /** Merges SQLite with Firestore once per launch, then refreshes the star/button states. */
+    private fun syncFromCloud() {
+        val uid = currentUserId ?: return
+        viewModelScope.launch {
+            sync.hydrateOnce(uid)
+            refreshFavorites()
+            refreshWatchlist()
+        }
     }
 
     /** Re-reads user favorites from SQLite */
@@ -96,11 +112,18 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    /** Re-reads watchlist from SQLite */
+    /** Re-reads this user's watchlist from SQLite */
     fun refreshWatchlist() {
+        val uid = currentUserId
+        if (uid == null) {
+            watchlistIds = emptySet()
+            render()
+            applyFlagsToNewThisWeek()
+            return
+        }
         viewModelScope.launch {
             watchlistIds = withContext(Dispatchers.IO) {
-                dbHelper.getWatchlistIds().toSet()
+                runCatching { dbHelper.getWatchlistIds(uid).toSet() }.getOrDefault(emptySet())
             }
             render()
             applyFlagsToNewThisWeek()
@@ -203,21 +226,26 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
                 !wasFavorite
             }
             refreshFavorites()
-            runCatching { cloudSync.pushFavorite(uid, imdbId, nowFavorite) }
+            sync.push(uid, LibraryList.FAVORITES, imdbId, nowFavorite)
         }
     }
 
     fun toggleWatchlist(imdbId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val isInWatchlist = dbHelper.isInWatchlist(imdbId)
-            if (isInWatchlist) {
-                dbHelper.removeFromWatchlist(imdbId)
-            } else {
-                dbHelper.addToWatchlist(imdbId)
+        val detail = knownDetails[imdbId] ?: return
+        val uid = currentUserId ?: return
+        viewModelScope.launch {
+            val nowInWatchlist = withContext(Dispatchers.IO) {
+                runCatching { dbHelper.cacheMovie(detail) }
+                val wasInWatchlist = dbHelper.isInWatchlist(uid, imdbId)
+                if (wasInWatchlist) {
+                    dbHelper.removeFromWatchlist(uid, imdbId)
+                } else {
+                    dbHelper.addToWatchlist(uid, imdbId)
+                }
+                !wasInWatchlist
             }
-            withContext(Dispatchers.Main) {
-                refreshWatchlist()
-            }
+            refreshWatchlist()
+            sync.push(uid, LibraryList.WATCHLIST, imdbId, nowInWatchlist)
         }
     }
 
@@ -249,6 +277,9 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
     }
 
     companion object {
-        val GENRES = listOf("All", "Action", "Animation", "Comedy", "Drama")
+        val GENRES = listOf(
+            "All", "Action", "Animation", "Comedy", "Drama",
+            "Horror", "Sci-Fi", "Romance", "Thriller", "Fantasy", "Crime", "Adventure"
+        )
     }
 }

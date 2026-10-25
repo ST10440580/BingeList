@@ -2,8 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Internet access for TMDB, OMDB, and Firebase -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
     <application
         android:name=".BingeListApp"
@@ -16,56 +18,50 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BingeList.NoActionBar">
 
-        <!-- Welcome / Splash Screen (App Entry Point) -->
-        <activity
-            android:name=".ui.account.WelcomeActivity"
-            android:exported="true">
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_stat_notification" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/bl_logo_bg" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="new_releases" />
+
+        <service
+            android:name=".notifications.BingeListMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".notifications.DemoNotificationService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Scheduled movie reminder notifications for demonstration" />
+        </service>
+
+        <activity android:name=".ui.account.WelcomeActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!-- Login Screen -->
-        <activity
-            android:name=".ui.account.LoginActivity"
-            android:exported="false" />
-
-        <!-- Registration Screen -->
-        <activity
-            android:name=".ui.account.RegisterActivity"
-            android:exported="false" />
-
-        <!-- Profile Screen -->
-        <activity
-            android:name=".ui.account.ProfileActivity"
-            android:exported="false" />
-
-        <!-- Discover (Main browse screen) -->
+        <activity android:name=".ui.account.LoginActivity" android:exported="false" />
+        <activity android:name=".ui.account.RegisterActivity" android:exported="false" />
+        <activity android:name=".ui.account.ProfileActivity" android:exported="false" />
         <activity
             android:name=".ui.discover.DiscoverActivity"
-            android:exported="false" />
-
-        <!-- Movie Details Screen -->
-        <activity
-            android:name=".ui.details.MovieDetailsActivity"
-            android:exported="false" />
-
-        <!-- Watchlist Screen -->
-        <activity
-            android:name=".ui.watchlist.WatchlistActivity"
-            android:exported="false" />
-
-        <!-- Favorites Screen -->
-        <activity
-            android:name=".ui.favorites.FavoritesActivity"
-            android:exported="false" />
-
-        <!-- Settings Screen -->
-        <activity
-            android:name=".ui.settings.SettingsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleTop" />
+        <activity android:name=".ui.details.MovieDetailsActivity" android:exported="false" />
+        <activity android:name=".ui.watchlist.WatchlistActivity" android:exported="false" />
+        <activity android:name=".ui.favorites.FavoritesActivity" android:exported="false" />
+        <activity android:name=".ui.settings.SettingsActivity" android:exported="false" />
 
     </application>
-
 </manifest>

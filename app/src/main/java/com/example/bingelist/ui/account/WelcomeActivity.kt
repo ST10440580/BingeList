@@ -17,7 +17,10 @@ class WelcomeActivity : AppCompatActivity() {
 
         // Skip welcome if the user is already logged in
         if (auth.currentUser != null) {
-            startActivity(Intent(this, DiscoverActivity::class.java))
+            startActivity(Intent(this, DiscoverActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                intent?.extras?.let { putExtras(it) }
+            })
             finish()
             return
         }
