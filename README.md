@@ -64,14 +64,10 @@ The app provides a simple and visually appealing interface designed to make disc
 
 ### Updated
 
-- Updated the Discover screen UI to match the Binge List design
-- Updated application colors and backgrounds
-- Updated search bar styling
-- Updated movie cards and featured movie section
-- Updated genre chips to use rounded pill-shaped buttons
-- Updated bottom navigation with icons and labels
-- Updated spacing, typography and rounded corners throughout the application
-- Updated error and loading states for improved user experience
+- Added Real-Time Notifications
+- 2 Additional features:
+  1. User can now edit their profile name as well as have a profile picture(Stored locally).
+  2. Movie Banter Notifications that recommend movies using a smart play on words.
 
 ## Running the project
 
