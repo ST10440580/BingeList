@@ -32,9 +32,25 @@ class MovieDetailsActivity : AppCompatActivity() {
         }
 
         binding.backButton.setOnClickListener { finish() }
+
+        // Favorite listeners
         binding.favoriteIcon.setOnClickListener { viewModel.toggleFavorite() }
+        binding.favoriteButton?.setOnClickListener { viewModel.toggleFavorite() }
+
+        // Watchlist toggle button
         binding.watchlistButton.setOnClickListener {
-            Toast.makeText(this, "Watchlist coming soon", Toast.LENGTH_SHORT).show()
+            viewModel.toggleWatchlist()
+        }
+
+        // Remove button
+        binding.btnRemove?.setOnClickListener {
+            viewModel.removeFromWatchlist()
+            Toast.makeText(this, "Removed from watchlist", Toast.LENGTH_SHORT).show()
+        }
+
+        // Mark Watched button
+        binding.btnMarkWatched?.setOnClickListener {
+            Toast.makeText(this, "Marked as watched!", Toast.LENGTH_SHORT).show()
         }
 
         observeState()
@@ -43,7 +59,7 @@ class MovieDetailsActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.refreshFavorite()
+        viewModel.refreshState()
     }
 
     private fun observeState() {
@@ -71,8 +87,6 @@ class MovieDetailsActivity : AppCompatActivity() {
                 binding.metaText.text = "${movie.year} · ${movie.runtime ?: "—"}"
                 binding.ratingText.text = movie.imdbRating ?: "—"
                 binding.plotText.text = movie.plot ?: "No description available."
-                //binding.directorText.text = "Director: ${movie.director ?: "Unknown"}"
-                //binding.actorsText.text = "Starring: ${movie.actors ?: "Unknown"}"
 
                 Glide.with(binding.posterImage)
                     .load(movie.posterUrlOrNull)
@@ -81,9 +95,19 @@ class MovieDetailsActivity : AppCompatActivity() {
                     .centerCrop()
                     .into(binding.posterImage)
 
+                // Favorite icon toggle
                 binding.favoriteIcon.setImageResource(
                     if (state.isFavorite) R.drawable.ic_star_filled else R.drawable.ic_star_outline
                 )
+
+                // Update Watchlist button text and icon dynamically
+                if (state.isInWatchlist) {
+                    binding.watchlistButton.text = "In watchlist"
+                    binding.watchlistButton.setIconResource(R.drawable.ic_check_small)
+                } else {
+                    binding.watchlistButton.text = "+ Add to watchlist"
+                    binding.watchlistButton.setIconResource(R.drawable.ic_add_small)
+                }
             }
         }
     }

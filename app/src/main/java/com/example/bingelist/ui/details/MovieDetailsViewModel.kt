@@ -18,7 +18,11 @@ import kotlinx.coroutines.withContext
 
 sealed class DetailsUiState {
     object Loading : DetailsUiState()
-    data class Success(val movie: MovieDetail, val isFavorite: Boolean) : DetailsUiState()
+    data class Success(
+        val movie: MovieDetail,
+        val isFavorite: Boolean,
+        val isInWatchlist: Boolean
+    ) : DetailsUiState()
     data class Error(val message: String) : DetailsUiState()
 }
 
@@ -52,8 +56,8 @@ class MovieDetailsViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
-    /** Re-reads the favorite flag without re-fetching the movie. Call from onResume. */
-    fun refreshFavorite() {
+    /** Re-reads favorite and watchlist flags without re-fetching from OMDb. */
+    fun refreshState() {
         val movie = currentMovie ?: return
         viewModelScope.launch { emitCurrentState(movie) }
     }
@@ -73,6 +77,33 @@ class MovieDetailsViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
+    fun toggleWatchlist() {
+        val movie = currentMovie ?: return
+        val uid = currentUserId ?: return
+        viewModelScope.launch {
+            val nowInWatchlist = withContext(Dispatchers.IO) {
+                val inWatchlist = dbHelper.isInWatchlist(uid, movie.imdbId)
+                if (inWatchlist) dbHelper.removeFromWatchlist(uid, movie.imdbId)
+                else dbHelper.addToWatchlist(uid, movie.imdbId)
+                !inWatchlist
+            }
+            emitCurrentState(movie)
+            sync.push(uid, LibraryList.WATCHLIST, movie.imdbId, nowInWatchlist)
+        }
+    }
+
+    fun removeFromWatchlist() {
+        val movie = currentMovie ?: return
+        val uid = currentUserId ?: return
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                dbHelper.removeFromWatchlist(uid, movie.imdbId)
+            }
+            emitCurrentState(movie)
+            sync.push(uid, LibraryList.WATCHLIST, movie.imdbId, false)
+        }
+    }
+
     private suspend fun emitCurrentState(movie: MovieDetail) {
         val uid = currentUserId
         val isFav = if (uid != null) {
@@ -80,6 +111,11 @@ class MovieDetailsViewModel(application: Application) : AndroidViewModel(applica
         } else {
             false
         }
-        _uiState.value = DetailsUiState.Success(movie, isFav)
+        val inWatchlist = if (uid != null) {
+            withContext(Dispatchers.IO) { dbHelper.isInWatchlist(uid, movie.imdbId) }
+        } else {
+            false
+        }
+        _uiState.value = DetailsUiState.Success(movie, isFav, inWatchlist)
     }
 }

@@ -53,23 +53,23 @@ class WatchlistActivity : AppCompatActivity() {
     }
 
     private fun setupBottomNav() {
-
         binding.navDiscover.setOnClickListener {
             startActivity(Intent(this, DiscoverActivity::class.java))
+            finish()
         }
 
         binding.navWatchList.setOnClickListener {
-            startActivity(Intent(this, WatchlistActivity::class.java))
+            // Already on Watchlist screen
         }
-
 
         binding.navFavorites.setOnClickListener {
             startActivity(Intent(this, FavoritesActivity::class.java))
+            finish()
         }
-
 
         binding.navSettings.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
+            finish()
         }
     }
 
@@ -107,16 +107,21 @@ class WatchlistActivity : AppCompatActivity() {
             is WatchlistUiState.Success -> {
                 binding.watchlistRecyclerView.visibility = View.VISIBLE
                 binding.emptyStateMessage.visibility = View.GONE
+                // Dynamically updates "TO WATCH · X" based on saved movie count
+                binding.tvToWatchHeader.text = "TO WATCH · ${state.movies.size}"
                 adapter.submitList(state.movies)
             }
             is WatchlistUiState.Empty -> {
                 binding.watchlistRecyclerView.visibility = View.GONE
                 binding.emptyStateMessage.visibility = View.VISIBLE
+                // Reset count to 0 when watchlist is empty
+                binding.tvToWatchHeader.text = "TO WATCH · 0"
             }
             is WatchlistUiState.Error -> {
                 binding.watchlistRecyclerView.visibility = View.GONE
                 binding.emptyStateMessage.visibility = View.VISIBLE
                 binding.emptyStateMessage.text = state.message
+                binding.tvToWatchHeader.text = "TO WATCH · 0"
             }
         }
     }
