@@ -31,14 +31,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/app_logo" />
+                android:src="@drawable/app_logo"
+                android:contentDescription="@string/app_name" />
         </androidx.cardview.widget.CardView>
 
         <!-- Welcome Title -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Welcome to Binge List"
+            android:text="@string/welcome_title"
             android:textColor="@color/binge_text_title"
             android:textSize="26sp"
             android:textStyle="bold" />
@@ -49,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:layout_marginBottom="36dp"
-            android:text="Your next movie night, already sorted."
+            android:text="@string/welcome_subtitle"
             android:textColor="@color/binge_text_body"
             android:textSize="14sp" />
 
@@ -58,7 +59,7 @@
             android:id="@+id/btnWelcomeRegister"
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:text="Create an account"
+            android:text="@string/create_account_button"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
             android:textSize="15sp"
@@ -72,7 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:layout_marginTop="12dp"
-            android:text="I already have an account"
+            android:text="@string/already_have_account_button"
             android:textAllCaps="false"
             android:textColor="@color/binge_text_title"
             android:textSize="15sp"
@@ -87,7 +88,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
             android:padding="8dp"
-            android:text="Continue without an account"
+            android:text="@string/continue_guest"
             android:textColor="@color/binge_text_body"
             android:textSize="13sp" />
 

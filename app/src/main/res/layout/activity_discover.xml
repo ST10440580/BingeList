@@ -66,7 +66,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Never forget what to watch next"
+                        android:text="@string/app_tagline"
                         android:textColor="@color/text_secondary"
                         android:textSize="14sp" />
 
@@ -79,7 +79,7 @@
                     android:background="@drawable/rating_badge_background"
                     android:padding="9dp"
                     android:src="@drawable/ic_profile"
-                    android:contentDescription="Profile &amp; Account"
+                    android:contentDescription="@string/profile_description"
                     app:tint="@color/white"/>
 
             </LinearLayout>
@@ -105,7 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:text="NEW THIS WEEK"
+                android:text="@string/new_this_week_header"
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp"
                 android:textStyle="bold"
@@ -158,10 +158,10 @@
                         android:id="@+id/newThisWeekCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="4 new this week"
                         android:textColor="@color/black"
                         android:textSize="17sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="4 new this week" />
 
                     <TextView
                         android:id="@+id/newThisWeekTitles"
@@ -170,9 +170,9 @@
                         android:layout_marginTop="3dp"
                         android:maxLines="2"
                         android:ellipsize="end"
-                        android:text="Dune: Part Two · Past Lives · The Holdovers · Across the Spider-Verse"
                         android:textColor="@color/white"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:text="Dune: Part Two · Past Lives · The Holdovers · Across the Spider-Verse" />
 
                 </LinearLayout>
 
@@ -201,9 +201,9 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="8dp"
-                android:text="12 results"
                 android:textColor="@color/text_secondary"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                tools:text="12 results" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/movieRecyclerView"
@@ -281,13 +281,13 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:src="@drawable/ic_nav_discover"
-                android:contentDescription="Discover" />
+                android:contentDescription="@string/nav_discover" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:text="Discover"
+                android:text="@string/nav_discover"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
 
@@ -310,13 +310,13 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:src="@drawable/ic_nav_watchlist"
-                android:contentDescription="WatchList" />
+                android:contentDescription="@string/nav_watchlist" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:text="Watchlist"
+                android:text="@string/nav_watchlist"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
 
@@ -339,13 +339,13 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:src="@drawable/ic_nav_favorites"
-                android:contentDescription="Favorites" />
+                android:contentDescription="@string/nav_favorites" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:text="Favorites"
+                android:text="@string/nav_favorites"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
 
@@ -368,13 +368,13 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:src="@drawable/ic_nav_settings"
-                android:contentDescription="Settings1" />
+                android:contentDescription="@string/nav_settings" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:text="Settings"
+                android:text="@string/nav_settings"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
 

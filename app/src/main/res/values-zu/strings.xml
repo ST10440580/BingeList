@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BingeList</string>
+    <string name="app_tagline">Ungalokothi ukhohlwe ukuthi yini ongayibuka ngokulandelayo</string>
+    <string name="search_hint">Sesha ngesihloko noma uhlobo…</string>
+    <string name="search_prompt">Sesha imuvi ukuze ubone imiphumela lapha.</string>
+    <string name="new_this_week_label">Okusha kuleli sonto</string>
+    <string name="movie_poster_description">Iphosta yemuvi</string>
+    <string name="nav_discover">Thola</string>
+    <string name="nav_watchlist">Uhlu lokubuka</string>
+    <string name="nav_favorites">Izintandokazi</string>
+    <string name="nav_settings">Izilungiselelo</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">Izilungiselelo</string>
+    <string name="language_label">Ulimi</string>
+    <string name="language_description">Khetha ulimi olusetshenziswa kulo lonke uhlelo lokusebenza.</string>
+    <string name="notifications_label">Izaziso zemuvi entsha</string>
+    <string name="notifications_description">Thola ibheji uma izihloko ezintsha zifika ku-Thola.</string>
+    <string name="movie_banter_label">I-Movie Banter</string>
+    <string name="movie_banter_description">Isaziso sokucaphuna kwe-movie njalo ngemizuzwana engama-30 imizuzu eyi-10. Valani noma nini.</string>
+    <string name="account_label">I-Akhawunti</string>
+    <string name="account_description">Phuma ku-akhawunti yakho kule divayisi.</string>
+    <string name="logout_button">Phuma</string>
+    <string name="logout_confirmation_message">Uqinisekile ukuthi ufuna ukuphuma?</string>
+    <string name="cancel">Khansela</string>
+
+    <!-- Discover Screen -->
+    <string name="profile_description">Iphrofayela ne-Akhawunti</string>
+    <string name="new_this_week_header">OKUSHA KULELI SONTO</string>
+    <string name="results_count_format">%1$d imiphumela</string>
+    <string name="new_this_week_format">%1$d okusha kuleli sonto</string>
+    <string name="loading_picks">Iyaloda okukhethiwe kwaleli sonto…</string>
+
+    <!-- Watchlist Screen -->
+    <string name="watchlist_title">Uhlu lokubuka</string>
+    <string name="watchlist_subtitle">Kulondolozwe kule divayisi — kusebenza ungaxhunyiwe ku-inthanethi.</string>
+    <string name="to_watch_header_format">OKOKUBUKA · %1$d</string>
+    <string name="empty_watchlist_message">Uhlu lwakho lokubuka lungenalutho.\nHlola bese wengeza amamuvi kusukela ku-Thola!</string>
+
+    <!-- Welcome Screen -->
+    <string name="welcome_title">Siyakwamukela ku-Binge List</string>
+    <string name="welcome_subtitle">Ubusuku bakho bemuvi obulandelayo, sebuvele buhleliwe.</string>
+    <string name="create_account_button">Dala i-akhawunti</string>
+    <string name="already_have_account_button">Sengivele ngine-akhawunti</string>
+    <string name="continue_guest">Qhubeka ngaphandle kwe-akhawunti</string>
+
+    <!-- Login/Register common -->
+    <string name="login_title">Ngena ngemvume</string>
+    <string name="register_title">Bhalisa</string>
+    <string name="label_email">I-IMEYILI</string>
+    <string name="hint_email">umsebenzisi@isibonelo.com</string>
+    <string name="label_password">IPHASIWEDI</string>
+    <string name="hint_password">••••••••••••</string>
+    <string name="no_account_prompt">Awukabi nayo i-akhawunti? </string>
+    <string name="signup_redirect">Bhalisa</string>
+    <string name="label_display_name">IGAMA LOKUBONISA</string>
+    <string name="hint_display_name">SiboSyncSolutions</string>
+
+    <!-- Profile Screen -->
+    <string name="back_button">← Emuva</string>
+    <string name="profile_title">Iphrofayela Yomsebenzisi</string>
+    <string name="change_photo">Shintsha isithombe</string>
+    <string name="remove_photo">Susa isithombe</string>
+    <string name="personal_details_title">Imininingwane Yomuntu</string>
+    <string name="label_display_name_profile">Igama Lokubonisa</string>
+    <string name="hint_name_profile">Igama Lakho</string>
+    <string name="label_email_profile">Ikheli le-imeyili (ID ye-Akhawunti)</string>
+    <string name="label_new_password">Iphasiwedi Entsha (uyazikhethela)</string>
+    <string name="hint_new_password">Shaya indiva ukuze ugcine le ekhona</string>
+    <string name="save_changes_button">Gcina Izinguquko</string>
+
+    <!-- Movie Details -->
+    <string name="overview_label">Ufushane</string>
+    <string name="favorites_button">Izintandokazi</string>
+    <string name="in_watchlist_button">Ohlwini lokubuka</string>
+    <string name="add_to_watchlist_button">Faka ohlwini lokubuka</string>
+    <string name="mark_watched_button">Maka njengokubukiwe</string>
+    <string name="remove_button">Susa</string>
+
+    <!-- Favorites Screen -->
+    <string name="favorites_empty_title">Azikho izintandokazi okwamanje</string>
+    <string name="favorites_empty_message">Thinta inkanyezi kunoma iyiphi imuvi ukuze uyengeze lapha.</string>
+</resources>

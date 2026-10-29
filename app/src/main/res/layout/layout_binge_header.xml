@@ -14,7 +14,8 @@
         android:layout_height="38dp"
         android:scaleType="centerCrop"
         android:src="@drawable/app_logo"
-        app:cornerSize="8dp" />
+        app:cornerSize="8dp"
+        android:contentDescription="@string/app_name" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -25,7 +26,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Binge List"
+            android:text="@string/app_name"
             android:textColor="@color/binge_text_title"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -33,7 +34,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Never forget what to watch next"
+            android:text="@string/app_tagline"
             android:textColor="@color/binge_text_muted"
             android:textSize="11sp" />
     </LinearLayout>

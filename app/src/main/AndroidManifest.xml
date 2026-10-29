@@ -16,7 +16,8 @@
         android:label="Binge List"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.BingeList.NoActionBar">
+        android:theme="@style/Theme.BingeList.NoActionBar"
+        android:localeConfig="@xml/locales_config">
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"

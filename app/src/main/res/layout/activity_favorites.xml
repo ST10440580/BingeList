@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="22dp"
-        android:text="Favorites"
+        android:text="@string/nav_favorites"
         android:textColor="@color/bl_logo_bg"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -58,7 +58,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="No favorites yet"
+            android:text="@string/favorites_empty_title"
             android:textColor="@color/bl_text_primary"
             android:textSize="17sp"
             android:textStyle="bold" />
@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:gravity="center"
-            android:text="Tap the star on any movie to add it here."
+            android:text="@string/favorites_empty_message"
             android:textColor="@color/bl_text_secondary"
             android:textSize="14sp" />
 
@@ -104,13 +104,13 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:src="@drawable/ic_nav_discover"
-                android:contentDescription="Discover" />
+                android:contentDescription="@string/nav_discover" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:text="Discover"
+                android:text="@string/nav_discover"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
 
@@ -133,13 +133,13 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:src="@drawable/ic_nav_watchlist"
-                android:contentDescription="WatchList" />
+                android:contentDescription="@string/nav_watchlist" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:text="Watchlist"
+                android:text="@string/nav_watchlist"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
 
@@ -162,14 +162,16 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:src="@drawable/ic_nav_favorites"
-                android:contentDescription="Favorites" />
+                android:contentDescription="@string/nav_favorites"
+                app:tint="@color/bl_logo_bg" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:text="Favorites"
-                android:textColor="@color/text_secondary"
+                android:text="@string/nav_favorites"
+                android:textColor="@color/bl_logo_bg"
+                android:textStyle="bold"
                 android:textSize="12sp" />
 
         </LinearLayout>
@@ -191,13 +193,13 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:src="@drawable/ic_nav_settings"
-                android:contentDescription="Settings1" />
+                android:contentDescription="@string/nav_settings" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:text="Settings"
+                android:text="@string/nav_settings"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
 
@@ -206,4 +208,3 @@
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-

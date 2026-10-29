@@ -15,6 +15,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.bingelist.R
 import com.example.bingelist.data.model.MovieCardUiModel
 import com.example.bingelist.databinding.ActivityDiscoverBinding
 import com.example.bingelist.notifications.NotificationHelper
@@ -173,9 +174,9 @@ class DiscoverActivity : AppCompatActivity() {
 
     private fun renderNewThisWeek(movies: List<MovieCardUiModel>) {
         newThisWeekAdapter.submitList(movies)
-        binding.newThisWeekCount.text = "${movies.size} new this week"
+        binding.newThisWeekCount.text = getString(R.string.new_this_week_format, movies.size)
         binding.newThisWeekTitles.text = if (movies.isEmpty()) {
-            "Loading this week's picks…"
+            getString(R.string.loading_picks)
         } else {
             movies.joinToString(" · ") { it.title }
         }
@@ -197,7 +198,7 @@ class DiscoverActivity : AppCompatActivity() {
             is DiscoverUiState.Success -> {
                 binding.movieRecyclerView.visibility = View.VISIBLE
                 binding.resultsCount.visibility = View.VISIBLE
-                binding.resultsCount.text = "${state.movies.size} results"
+                binding.resultsCount.text = getString(R.string.results_count_format, state.movies.size)
                 resultsAdapter.submitList(state.movies)
             }
             is DiscoverUiState.Empty -> {

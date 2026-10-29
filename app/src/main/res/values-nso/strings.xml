@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BingeList</string>
+    <string name="app_tagline">O se ke wa lebala seo o swanetšego go se bogela ka morago</string>
+    <string name="search_hint">Nyaka ka thaetlele goba mofuta…</string>
+    <string name="search_prompt">Nyaka filimi go bona dipoelo mo.</string>
+    <string name="new_this_week_label">Tše mpsha bekeng ye</string>
+    <string name="movie_poster_description">Phousetara ya filimi</string>
+    <string name="nav_discover">Utolla</string>
+    <string name="nav_watchlist">Lenaneo la go bogela</string>
+    <string name="nav_favorites">Tše di ratwago</string>
+    <string name="nav_settings">Dipeakanyo</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">Dipeakanyo</string>
+    <string name="language_label">Leleme</string>
+    <string name="language_description">Khetha leleme leo le dirišwago lenaneong ka moka.</string>
+    <string name="notifications_label">Ditsebiso tša difilimi tše mpsha</string>
+    <string name="notifications_description">Hwetsa betšhe ge dihlogo tše mpsha di fihla go Utolla.</string>
+    <string name="movie_banter_label">Metlae ya difilimi</string>
+    <string name="movie_banter_description">Tsebiso ya tsopolo ya filimi morago ga metsotswana e 30 metsotso e 10. Tima nako efe kapa efe.</string>
+    <string name="account_label">Akhaonto</string>
+    <string name="account_description">Tšwa mo akhaontong ya gago sedirišweng se.</string>
+    <string name="logout_button">Tšwa</string>
+    <string name="logout_confirmation_message">A o tloga o nyaka go tšwa?</string>
+    <string name="cancel">Phumola</string>
+
+    <!-- Discover Screen -->
+    <string name="profile_description">Phrofaele le Akhaonto</string>
+    <string name="new_this_week_header">TŠE MPSHA BEKENG YE</string>
+    <string name="results_count_format">Dipoelo tše %1$d</string>
+    <string name="new_this_week_format">tše mpsha tše %1$d bekeng ye</string>
+    <string name="loading_picks">E sa louta tše di kgethilwego tša beke ye…</string>
+
+    <!-- Watchlist Screen -->
+    <string name="watchlist_title">Lenaneo la go bogela</string>
+    <string name="watchlist_subtitle">E bolokilwe sedirišweng se — e šoma ntle le inthanete.</string>
+    <string name="to_watch_header_format">TŠA GO BOGELWA · %1$d</string>
+    <string name="empty_watchlist_message">Lenaneo la gago la go bogela ga le na selo.\nUtolla o be o tsenye difilimi go tšwa go Utolla!</string>
+
+    <!-- Welcome Screen -->
+    <string name="welcome_title">Re a go amogela go Binge List</string>
+    <string name="welcome_subtitle">Bošego bja gago bja difilimi bo thulagantšwe.</string>
+    <string name="create_account_button">Hlola akhaonto</string>
+    <string name="already_have_account_button">Ke šetše ke na le akhaonto</string>
+    <string name="continue_guest">Tšwela pele ntle le akhaonto</string>
+
+    <!-- Login/Register common -->
+    <string name="login_title">Tsena</string>
+    <string name="register_title">Ingwadiše</string>
+    <string name="label_email">IMEYILI</string>
+    <string name="hint_email">mosedirisi@mohlala.com</string>
+    <string name="label_password">PHASWETE</string>
+    <string name="hint_password">••••••••••••</string>
+    <string name="no_account_prompt">Ga o na akhaonto? </string>
+    <string name="signup_redirect">Ingwadiše</string>
+    <string name="label_display_name">LEINA LA GO BONAGALA</string>
+    <string name="hint_display_name">SiboSyncSolutions</string>
+
+    <!-- Profile Screen -->
+    <string name="back_button">← Morago</string>
+    <string name="profile_title">Phrofaele ya Mosedirisi</string>
+    <string name="change_photo">Fetola seswantšho</string>
+    <string name="remove_photo">Tloša seswantšho</string>
+    <string name="personal_details_title">Dintlha tša Motho</string>
+    <string name="label_display_name_profile">Leina la go Bonagala</string>
+    <string name="hint_name_profile">Leina la Gago</string>
+    <string name="label_email_profile">Aterese ya I-meyili (ID ya Akhaonto)</string>
+    <string name="label_new_password">Phaswete ye Mpsha (boikgethelo)</string>
+    <string name="hint_new_password">Tlogela go se na selo go boloka ye e lego gona</string>
+    <string name="save_changes_button">Boloka Diphetogo</string>
+
+    <!-- Movie Details -->
+    <string name="overview_label">Kakaretšo</string>
+    <string name="favorites_button">Tše di ratwago</string>
+    <string name="in_watchlist_button">Lenaneong</string>
+    <string name="add_to_watchlist_button">Tsenya lenaneong</string>
+    <string name="mark_watched_button">Swaya gore e bogetšwe</string>
+    <string name="remove_button">Tloša</string>
+
+    <!-- Favorites Screen -->
+    <string name="favorites_empty_title">Ga go na tše di ratwago mo nakong ye</string>
+    <string name="favorites_empty_message">Kgwatha naledi go filimi efe kapa efe go e tsenya mo.</string>
+</resources>

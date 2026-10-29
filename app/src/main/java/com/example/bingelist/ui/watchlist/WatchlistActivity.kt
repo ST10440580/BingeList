@@ -3,7 +3,6 @@ package com.example.bingelist.ui.watchlist
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +10,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.bingelist.R
 import com.example.bingelist.databinding.ActivityWatchlistBinding
 import com.example.bingelist.ui.account.LoginActivity
 import com.example.bingelist.ui.details.MovieDetailsActivity
@@ -75,9 +75,9 @@ class WatchlistActivity : AppCompatActivity() {
 
     private fun showLogoutDialog() {
         AlertDialog.Builder(this)
-            .setTitle("Account")
+            .setTitle(getString(R.string.account_label))
             .setMessage("Are you sure you want to log out?")
-            .setPositiveButton("Log Out") { _, _ ->
+            .setPositiveButton(getString(R.string.logout_button)) { _, _ ->
                 FirebaseAuth.getInstance().signOut()
                 val intent = Intent(this, LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -108,20 +108,20 @@ class WatchlistActivity : AppCompatActivity() {
                 binding.watchlistRecyclerView.visibility = View.VISIBLE
                 binding.emptyStateMessage.visibility = View.GONE
                 // Dynamically updates "TO WATCH · X" based on saved movie count
-                binding.tvToWatchHeader.text = "TO WATCH · ${state.movies.size}"
+                binding.tvToWatchHeader.text = getString(R.string.to_watch_header_format, state.movies.size)
                 adapter.submitList(state.movies)
             }
             is WatchlistUiState.Empty -> {
                 binding.watchlistRecyclerView.visibility = View.GONE
                 binding.emptyStateMessage.visibility = View.VISIBLE
                 // Reset count to 0 when watchlist is empty
-                binding.tvToWatchHeader.text = "TO WATCH · 0"
+                binding.tvToWatchHeader.text = getString(R.string.to_watch_header_format, 0)
             }
             is WatchlistUiState.Error -> {
                 binding.watchlistRecyclerView.visibility = View.GONE
                 binding.emptyStateMessage.visibility = View.VISIBLE
                 binding.emptyStateMessage.text = state.message
-                binding.tvToWatchHeader.text = "TO WATCH · 0"
+                binding.tvToWatchHeader.text = getString(R.string.to_watch_header_format, 0)
             }
         }
     }

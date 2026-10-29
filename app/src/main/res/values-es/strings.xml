@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BingeList</string>
+    <string name="app_tagline">Nunca olvides qué ver a continuación</string>
+    <string name="search_hint">Buscar por título o género…</string>
+    <string name="search_prompt">Busca una película para ver los resultados aquí.</string>
+    <string name="new_this_week_label">Nuevo esta semana</string>
+    <string name="movie_poster_description">Póster de la película</string>
+    <string name="nav_discover">Descubrir</string>
+    <string name="nav_watchlist">Lista de seguimiento</string>
+    <string name="nav_favorites">Favoritos</string>
+    <string name="nav_settings">Ajustes</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">Ajustes</string>
+    <string name="language_label">Idioma</string>
+    <string name="language_description">Elige el idioma utilizado en la aplicación.</string>
+    <string name="notifications_label">Notificaciones de nuevas películas</string>
+    <string name="notifications_description">Recibe una insignia cuando lleguen nuevos títulos a Descubrir.</string>
+    <string name="movie_banter_label">Charla de películas</string>
+    <string name="movie_banter_description">Una notificación de cita de película cada 30 segundos durante 10 minutos. Desactívalo en cualquier momento.</string>
+    <string name="account_label">Cuenta</string>
+    <string name="account_description">Cierra la sesión de tu cuenta en este dispositivo.</string>
+    <string name="logout_button">Cerrar sesión</string>
+    <string name="logout_confirmation_message">¿Estás seguro de que quieres cerrar sesión?</string>
+    <string name="cancel">Cancelar</string>
+
+    <!-- Discover Screen -->
+    <string name="profile_description">Perfil y Cuenta</string>
+    <string name="new_this_week_header">NUEVO ESTA SEMANA</string>
+    <string name="results_count_format">%1$d resultados</string>
+    <string name="new_this_week_format">%1$d nuevo esta semana</string>
+    <string name="loading_picks">Cargando las selecciones de esta semana…</string>
+
+    <!-- Watchlist Screen -->
+    <string name="watchlist_title">Lista de seguimiento</string>
+    <string name="watchlist_subtitle">Guardado en este dispositivo — funciona sin conexión.</string>
+    <string name="to_watch_header_format">PARA VER · %1$d</string>
+    <string name="empty_watchlist_message">Tu lista de seguimiento está vacía.\n¡Explora y añade películas desde Descubrir!</string>
+
+    <!-- Welcome Screen -->
+    <string name="welcome_title">Bienvenido a Binge List</string>
+    <string name="welcome_subtitle">Tu próxima noche de películas, ya organizada.</string>
+    <string name="create_account_button">Crear una cuenta</string>
+    <string name="already_have_account_button">Ya tengo una cuenta</string>
+    <string name="continue_guest">Continuar sin una cuenta</string>
+
+    <!-- Login/Register common -->
+    <string name="login_title">Iniciar sesión</string>
+    <string name="register_title">Registrarse</string>
+    <string name="label_email">CORREO ELECTRÓNICO</string>
+    <string name="hint_email">usuario@ejemplo.com</string>
+    <string name="label_password">CONTRASEÑA</string>
+    <string name="hint_password">••••••••••••</string>
+    <string name="no_account_prompt">¿Aún no tienes cuenta? </string>
+    <string name="signup_redirect">Regístrate</string>
+    <string name="label_display_name">NOMBRE DE USUARIO</string>
+    <string name="hint_display_name">SiboSyncSolutions</string>
+
+    <!-- Profile Screen -->
+    <string name="back_button">← Volver</string>
+    <string name="profile_title">Perfil de usuario</string>
+    <string name="change_photo">Cambiar foto</string>
+    <string name="remove_photo">Eliminar foto</string>
+    <string name="personal_details_title">Datos personales</string>
+    <string name="label_display_name_profile">Nombre de usuario</string>
+    <string name="hint_name_profile">Tu nombre</string>
+    <string name="label_email_profile">Dirección de correo (ID de cuenta)</string>
+    <string name="label_new_password">Nueva contraseña (opcional)</string>
+    <string name="hint_new_password">Dejar en blanco para mantener la actual</string>
+    <string name="save_changes_button">Guardar cambios</string>
+</resources>

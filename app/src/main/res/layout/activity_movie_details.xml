@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingVertical="8dp"
-                android:text="← Back"
+                android:text="@string/back_button"
                 android:textColor="@color/bl_logo_bg"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -141,10 +141,11 @@
                                 app:tint="@color/bl_star_gold" />
 
                             <TextView
+                                android:id="@+id/favoriteText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="6dp"
-                                android:text="Favorites"
+                                android:text="@string/nav_favorites"
                                 android:textColor="@color/bl_chip_unselected_text"
                                 android:textSize="11sp"
                                 android:textStyle="bold" />
@@ -171,7 +172,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Overview"
+                        android:text="@string/overview_label"
                         android:textColor="@color/bl_text_primary"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -201,7 +202,7 @@
                     android:layout_height="46dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:text="In watchlist"
+                    android:text="@string/in_watchlist_button"
                     android:textAllCaps="false"
                     android:textColor="@color/bl_chip_unselected_text"
                     android:textSize="12sp"
@@ -217,7 +218,7 @@
                     android:layout_height="46dp"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
-                    android:text="Mark watched"
+                    android:text="@string/mark_watched_button"
                     android:textAllCaps="false"
                     android:textColor="@color/bl_chip_unselected_text"
                     android:textSize="12sp"
@@ -233,7 +234,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="42dp"
                 android:layout_marginTop="10dp"
-                android:text="Remove"
+                android:text="@string/remove_button"
                 android:textAllCaps="false"
                 android:textColor="@color/bl_chip_unselected_text"
                 android:textSize="12sp"

@@ -60,7 +60,7 @@
         android:layout_height="24dp"
         android:padding="2dp"
         android:src="@drawable/ic_star_outline"
-        android:contentDescription="Toggle favorite"
+        android:contentDescription="@string/favorites_button"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -148,7 +148,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
-            android:text="Add to watchlist"
+            android:text="@string/add_to_watchlist_button"
             android:textColor="@android:color/white"
             android:textSize="13sp"
             android:textStyle="bold" />

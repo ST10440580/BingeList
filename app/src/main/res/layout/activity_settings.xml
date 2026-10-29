@@ -60,7 +60,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Never forget what to watch next"
+                        android:text="@string/app_tagline"
                         android:textColor="@color/text_secondary"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -70,7 +70,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Settings"
+                android:text="@string/settings_title"
                 android:textColor="@color/bl_logo_bg"
                 android:textSize="28sp"
                 android:textStyle="bold"
@@ -94,7 +94,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Language"
+                        android:text="@string/language_label"
                         android:textColor="@color/bl_text_primary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -103,7 +103,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Choose the language used across the app."
+                        android:text="@string/language_description"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp" />
 
@@ -142,7 +142,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="New movie notifications"
+                            android:text="@string/notifications_label"
                             android:textColor="@color/bl_text_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -151,7 +151,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="Get a badge when fresh titles land in Discover."
+                            android:text="@string/notifications_description"
                             android:textColor="@color/text_secondary"
                             android:textSize="13sp" />
                     </LinearLayout>
@@ -192,7 +192,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Movie Banter"
+                            android:text="@string/movie_banter_label"
                             android:textColor="@color/bl_text_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -201,7 +201,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="A movie-quote notification every 30 seconds for 10 minutes. Turn off any time."
+                            android:text="@string/movie_banter_description"
                             android:textColor="@color/text_secondary"
                             android:textSize="13sp" />
                     </LinearLayout>
@@ -233,7 +233,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Account"
+                        android:text="@string/account_label"
                         android:textColor="@color/bl_text_primary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -243,7 +243,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:layout_marginBottom="16dp"
-                        android:text="Sign out of your account on this device."
+                        android:text="@string/account_description"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp" />
 
@@ -251,7 +251,7 @@
                         android:id="@+id/btnLogout"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:text="Log Out"
+                        android:text="@string/logout_button"
                         android:textColor="#FFFFFF"
                         android:textSize="15sp"
                         android:textStyle="bold"
@@ -292,7 +292,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Discover"
+                android:text="@string/nav_discover"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -313,7 +313,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Watchlist"
+                android:text="@string/nav_watchlist"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -334,7 +334,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Favorites"
+                android:text="@string/nav_favorites"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -356,7 +356,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Settings"
+                android:text="@string/nav_settings"
                 android:textColor="@color/bl_logo_bg"
                 android:textStyle="bold"
                 android:textSize="12sp" />

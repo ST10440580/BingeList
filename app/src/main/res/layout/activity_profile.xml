@@ -35,7 +35,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="8dp"
-                    android:text="← Back"
+                    android:text="@string/back_button"
                     android:textColor="@color/bl_logo_bg"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -45,7 +45,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="User Profile"
+                    android:text="@string/profile_title"
                     android:textColor="@color/bl_text_primary"
                     android:textSize="20sp"
                     android:textStyle="bold"
@@ -60,7 +60,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/rating_badge_background"
-                android:contentDescription="Profile photo"
+                android:contentDescription="@string/profile_description"
                 android:padding="22dp"
                 android:src="@drawable/ic_profile"
                 app:tint="@color/white" />
@@ -71,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:padding="8dp"
-                android:text="Change photo"
+                android:text="@string/change_photo"
                 android:textColor="@color/bl_logo_bg"
                 android:textStyle="bold" />
 
@@ -82,7 +82,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="16dp"
                 android:padding="4dp"
-                android:text="Remove photo"
+                android:text="@string/remove_photo"
                 android:textColor="#E50914"
                 android:textSize="13sp"
                 android:visibility="gone" />
@@ -105,7 +105,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Personal Details"
+                        android:text="@string/personal_details_title"
                         android:textColor="@color/bl_text_primary"
                         android:textSize="16sp"
                         android:textStyle="bold"
@@ -115,12 +115,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Display Name"
+                        android:text="@string/label_display_name_profile"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp"
                         android:layout_marginBottom="4dp" />
-
-                    <!-- Email Field -->
 
                     <EditText
                         android:id="@+id/etDisplayName"
@@ -128,7 +126,7 @@
                         android:layout_height="48dp"
                         android:layout_marginBottom="16dp"
                         android:background="@drawable/search_bar_background"
-                        android:hint="Your Name"
+                        android:hint="@string/hint_name_profile"
                         android:inputType="textPersonName"
                         android:paddingHorizontal="14dp"
                         android:textColor="@color/bl_text_primary"
@@ -137,7 +135,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Email Address (Account ID)"
+                        android:text="@string/label_email_profile"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp"
                         android:layout_marginBottom="4dp" />
@@ -157,7 +155,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="New Password (optional)"
+                        android:text="@string/label_new_password"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp"
                         android:layout_marginBottom="4dp" />
@@ -167,7 +165,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:background="@drawable/search_bar_background"
-                        android:hint="Leave blank to keep current"
+                        android:hint="@string/hint_new_password"
                         android:inputType="textPassword"
                         android:paddingHorizontal="14dp"
                         android:textColor="@color/bl_text_primary"
@@ -179,7 +177,7 @@
                         android:id="@+id/btnSaveProfile"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:text="Save Changes"
+                        android:text="@string/save_changes_button"
                         android:textColor="@color/white"
                         android:textStyle="bold"
                         app:backgroundTint="@color/bl_logo_bg"
@@ -206,7 +204,7 @@
                         android:id="@+id/btnLogout"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:text="Log Out"
+                        android:text="@string/logout_button"
                         android:textColor="@color/white"
                         android:textStyle="bold"
                         app:backgroundTint="#E50914"
